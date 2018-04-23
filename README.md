@@ -12,4 +12,12 @@ List<Sample> samples;
         
 ...
 
-  tableViewX.setContent(samples);
+  // [OPTIONAL] Enables item-counting column
+        tableViewX.setRowCounting(true);
+        // [OPTIONAL] Sets the base index of the item-counting column to One-based
+        tableViewX.setBaseIndex(1);
+        // [OPTIONAL] Sets the title mode to "Camel Case With Spaces"
+        tableViewX.setTitleStyle(TableViewX.TitleStyle.CAPITALIZE_SPACING);
+        // Sets the contents
+        tableViewX.setContent(samples);
+```
