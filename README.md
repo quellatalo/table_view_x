@@ -12,7 +12,7 @@ List<Sample> samples;
         
 ...
 
-  // [OPTIONAL] Enables item-counting column
+        // [OPTIONAL] Enables item-counting column
         tableViewX.setRowCounting(true);
         // [OPTIONAL] Sets the base index of the item-counting column to One-based
         tableViewX.setBaseIndex(1);
