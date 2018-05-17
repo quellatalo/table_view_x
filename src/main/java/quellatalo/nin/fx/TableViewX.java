@@ -10,6 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static quellatalo.nin.fx.ReflectionUtils.getGetter;
+
 /**
  * TableView X is an attempt to improve TableView to be able to handle custom user-defined types as data.
  * By using reflection, it will read the data structure, and create columns for all properties.
@@ -128,12 +130,11 @@ public class TableViewX<S> extends TableView<S> {
             for (Field field : fields) {
                 String name = field.getName();
                 Class fieldType = field.getType();
-                try {
-                    // if not a property, go to catch
-                    String capitalizedName = StringUtils.capitalizeFirstLetter(name);
-                    Method m = c.getMethod("get" + capitalizedName);
-                    // add column
-                    if (!onlyStringAndPrimitives && (fieldType.isPrimitive() || fieldType == String.class)) {
+                String capitalizedName = StringUtils.capitalizeFirstLetter(name);
+                // add column
+                if (!onlyStringAndPrimitives || fieldType.isPrimitive() || fieldType == String.class) {
+                    Method m = getGetter(c, capitalizedName);
+                    if (m != null) {
                         switch (titleStyle) {
                             default:
                             case ORIGINAL:
@@ -172,13 +173,12 @@ public class TableViewX<S> extends TableView<S> {
                             return new SimpleObjectProperty(o);
                         });
                     }
-                } catch (NoSuchMethodException e) {
-                    // skip adding column
                 }
             }
             getItems().addAll(items);
         }
     }
+
 
     /**
      * Column header naming styles.
