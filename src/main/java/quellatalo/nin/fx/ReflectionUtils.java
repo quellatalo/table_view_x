@@ -11,7 +11,13 @@ class ReflectionUtils {
             try {
                 m = c.getMethod("is" + capitalizedName);
             } catch (NoSuchMethodException e1) {
-                // not found
+                if (capitalizedName.startsWith("is") || capitalizedName.startsWith("has")) {
+                    try {
+                        m = c.getMethod(capitalizedName);
+                    } catch (NoSuchMethodException e2) {
+                        // not found
+                    }
+                }
             }
         }
         return m;
