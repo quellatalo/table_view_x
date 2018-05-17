@@ -11,7 +11,7 @@ class ReflectionUtils {
             try {
                 m = c.getMethod("is" + capitalizedName);
             } catch (NoSuchMethodException e1) {
-                // skip adding column
+                // not found
             }
         }
         return m;
