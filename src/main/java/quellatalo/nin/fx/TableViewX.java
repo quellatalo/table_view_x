@@ -16,6 +16,9 @@ import java.util.List;
  * @param <S> Specific type this TableView accepts.
  */
 public class TableViewX<S> extends TableView<S> {
+    public static final int DEFAULT_BASE_INDEX = 0;
+    public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
+
     private BooleanProperty rowCounting;
     private BooleanProperty onlyStringAndPrimitives;
     private BooleanProperty displayClass;
@@ -32,8 +35,8 @@ public class TableViewX<S> extends TableView<S> {
         onlyStringAndPrimitives = new SimpleBooleanProperty(this, "onlyStringAndPrimitives", false);
         displayClass = new SimpleBooleanProperty(this, "displayClass", false);
         displayHashCode = new SimpleBooleanProperty(this, "displayHashCode", false);
-        baseIndex = new SimpleIntegerProperty(this, "baseIndex", 0);
-        rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", "#");
+        baseIndex = new SimpleIntegerProperty(this, "baseIndex", DEFAULT_BASE_INDEX);
+        rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
     }
 
