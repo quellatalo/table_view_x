@@ -128,12 +128,12 @@ public class TableViewX<S> extends TableView<S> {
                 getColumns().add(indexColumn);
             }
             for (Field field : fields) {
-                String name = field.getName();
                 Class fieldType = field.getType();
-                String capitalizedName = StringUtils.capitalizeFirstLetter(name);
                 // add column
                 if (!onlyStringAndPrimitives || fieldType.isPrimitive() || fieldType == String.class) {
-                    Method m = getGetter(c, capitalizedName);
+                    String name = field.getName();
+                    String capitalizedName = StringUtils.capitalizeFirstLetter(name);
+                    Method m = getGetter(c, name, capitalizedName);
                     if (m != null) {
                         switch (titleStyle) {
                             default:
