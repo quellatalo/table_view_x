@@ -85,7 +85,7 @@ public class TableViewX<S> extends TableView<S> {
                         if (!displayHashCode.get() && name.equals("hashCode")) continue;
                         Class propType = method.getReturnType();
                         // add column
-                        if (!onlyStringAndPrimitives.get() || propType.isPrimitive() || propType == String.class) {
+                        if (propType != Void.TYPE && (!onlyStringAndPrimitives.get() || propType.isPrimitive() || propType == String.class)) {
                             String capitalizedName = StringUtils.capitalizeFirstLetter(name);
                             switch (titleStyle.get()) {
                                 default:
