@@ -59,12 +59,6 @@ public class TableViewX<S> extends TableView<S> {
         if (items != null && !items.isEmpty()) {
             Class c = items.get(0).getClass();
             Method[] methods = c.getMethods();
-            if (rowCounting.get()) {
-                TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
-                indexColumn.setSortable(false);
-                indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
-                getColumns().add(indexColumn);
-            }
             boolean isGetter;
             String name;
             for (Method method : methods) {
@@ -127,6 +121,13 @@ public class TableViewX<S> extends TableView<S> {
                         }
                     }
                 }
+            }
+            getColumns().sort((o1, o2) -> o2.getText().compareTo(o1.getText()));
+            if (rowCounting.get()) {
+                TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
+                indexColumn.setSortable(false);
+                indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
+                getColumns().add(0, indexColumn);
             }
             getItems().addAll(items);
         }
