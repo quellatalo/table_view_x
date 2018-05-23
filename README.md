@@ -71,7 +71,7 @@ TableViewX<Sample> tableViewX;
         tableViewX.setBaseIndex(1);
         // [OPTIONAL] Sets the title mode to "Camel Case With Spaces"
         tableViewX.setTitleStyle(TableViewX.TitleStyle.CAPITALIZE_SPACING);
-        // [OPTIONAL] Display all properties regardless type (it will use toString as display data)
+        // [OPTIONAL] Narrow down display properties to String and Primitive types only
         tableViewX.setOnlyStringAndPrimitives(true);
         // [OPTIONAL] Display item type
         tableViewX.setDisplayClass(true);
