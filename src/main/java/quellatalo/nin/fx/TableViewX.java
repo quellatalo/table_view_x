@@ -3,10 +3,12 @@ package quellatalo.nin.fx;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -122,7 +124,7 @@ public class TableViewX<S> extends TableView<S> {
                     }
                 }
             }
-            getColumns().sort((o1, o2) -> o2.getText().compareTo(o1.getText()));
+            getColumns().sort(Comparator.comparing(TableColumnBase::getText));
             if (rowCounting.get()) {
                 TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
                 indexColumn.setSortable(false);
