@@ -71,7 +71,7 @@ TableViewX<Sample> tableViewX;
         tableViewX.setBaseIndex(1);
         // [OPTIONAL] Sets the title mode to "Camel Case With Spaces"
         tableViewX.setTitleStyle(TableViewX.TitleStyle.CAPITALIZE_SPACING);
-        // [OPTIONAL] Sets the base index of the item-counting column to One-based
+        // [OPTIONAL] Display all properties regardless type (it will use toString as display data)
         tableViewX.setOnlyStringAndPrimitives(true);
         // [OPTIONAL] Display item type
         tableViewX.setDisplayClass(true);
