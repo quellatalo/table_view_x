@@ -16,7 +16,8 @@ public class Testing extends Application {
         primaryStage.setTitle("Kawaii is Justice!");
         Display display = new Display();
         display.setContent(samples);
-        primaryStage.setScene(new Scene(display));
+        Scene scene = new Scene(display);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 }

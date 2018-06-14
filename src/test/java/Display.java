@@ -25,5 +25,6 @@ public class Display extends AnchorPane {
 
     public void setContent(List<Sample> content) {
         tableViewX.setContent(content);
+        tableViewX.getColumns().forEach(sampleTableColumn -> System.out.println(sampleTableColumn.getText()));
     }
 }

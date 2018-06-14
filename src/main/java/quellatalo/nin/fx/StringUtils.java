@@ -7,12 +7,14 @@ class StringUtils {
 
     static String spacing(String str) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (Character.isUpperCase(c)) {
-                sb.append(' ');
+        if (str.length() > 0) {
+            for (int i = 1; i < str.length(); i++) {
+                char c = str.charAt(i);
+                if (Character.isUpperCase(c)) {
+                    sb.append(' ');
+                }
+                sb.append(c);
             }
-            sb.append(c);
         }
         return sb.toString();
     }
