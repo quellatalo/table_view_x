@@ -15,6 +15,7 @@ class StringUtils {
                 }
                 sb.append(c);
             }
+            sb.append(str.charAt(0));
         }
         return sb.toString();
     }
