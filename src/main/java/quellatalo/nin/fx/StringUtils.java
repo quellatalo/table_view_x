@@ -8,6 +8,7 @@ class StringUtils {
     static String spacing(String str) {
         StringBuilder sb = new StringBuilder();
         if (str.length() > 0) {
+            sb.append(str.charAt(0));
             for (int i = 1; i < str.length(); i++) {
                 char c = str.charAt(i);
                 if (Character.isUpperCase(c)) {
@@ -15,7 +16,6 @@ class StringUtils {
                 }
                 sb.append(c);
             }
-            sb.append(str.charAt(0));
         }
         return sb.toString();
     }
