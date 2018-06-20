@@ -6,7 +6,7 @@
 
     <groupId>quellatalo.nin.fx</groupId>
     <artifactId>table_view_x</artifactId>
-    <version>1.2.5</version>
+    <version>1.3</version>
 
     <build>
         <plugins>

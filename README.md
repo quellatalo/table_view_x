@@ -72,11 +72,15 @@ TableViewX<Sample> tableViewX;
         // [OPTIONAL] Sets the title mode to "Camel Case With Spaces"
         tableViewX.setTitleStyle(TableViewX.TitleStyle.CAPITALIZE_SPACING);
         // [OPTIONAL] Narrow down display properties to String and Primitive types only
-        tableViewX.setOnlyStringAndPrimitives(true);
+        tableViewX.setStringAndPrimitivesOnly(true);
         // [OPTIONAL] Display item type
         tableViewX.setDisplayClass(true);
         // [OPTIONAL] Display HashCode
         tableViewX.setDisplayHashCode(true);
+        //// [OPTIONAL] Forced Display Types
+        //// In case you want to display some specific properties which return a custom type
+        //// It will display the result of toString()
+        //tableViewX.getForcedDisplayTypes().add(SomeType.class);
 
         // Sets the contents
         tableViewX.setContent(samples);

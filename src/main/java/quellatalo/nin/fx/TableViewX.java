@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,24 +23,26 @@ public class TableViewX<S> extends TableView<S> {
     public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
 
     private BooleanProperty rowCounting;
-    private BooleanProperty onlyStringAndPrimitives;
+    private BooleanProperty stringAndPrimitivesOnly;
     private BooleanProperty displayClass;
     private BooleanProperty displayHashCode;
     private IntegerProperty baseIndex;
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
+    private List<Class> forcedDisplayTypes;
 
     /**
      * Construct a TableViewX.
      */
     public TableViewX() {
         rowCounting = new SimpleBooleanProperty(this, "rowCounting", false);
-        onlyStringAndPrimitives = new SimpleBooleanProperty(this, "onlyStringAndPrimitives", false);
+        stringAndPrimitivesOnly = new SimpleBooleanProperty(this, "stringAndPrimitivesOnly", true);
         displayClass = new SimpleBooleanProperty(this, "displayClass", false);
         displayHashCode = new SimpleBooleanProperty(this, "displayHashCode", false);
         baseIndex = new SimpleIntegerProperty(this, "baseIndex", DEFAULT_BASE_INDEX);
         rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
+        forcedDisplayTypes = new ArrayList<>();
     }
 
     /**
@@ -81,7 +84,14 @@ public class TableViewX<S> extends TableView<S> {
                         if (!displayHashCode.get() && name.equals("hashCode")) continue;
                         Class propType = method.getReturnType();
                         // add column
-                        if (propType != Void.TYPE && (!onlyStringAndPrimitives.get() || propType.isPrimitive() || propType == String.class)) {
+                        if (
+                                propType != Void.TYPE && (
+                                        !stringAndPrimitivesOnly.get()
+                                                || propType.isPrimitive()
+                                                || propType == String.class
+                                                || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
+                                )
+                                ) {
                             String capitalizedName = StringUtils.capitalizeFirstLetter(name);
                             switch (titleStyle.get()) {
                                 default:
@@ -158,17 +168,17 @@ public class TableViewX<S> extends TableView<S> {
      *
      * @return Whether this TableView only displays String and Primitives while ignore all other types.
      */
-    public boolean isOnlyStringAndPrimitives() {
-        return onlyStringAndPrimitives.get();
+    public boolean getStringAndPrimitivesOnly() {
+        return stringAndPrimitivesOnly.get();
     }
 
     /**
      * Sets whether this TableView only displays String and Primitives while ignore all other types.
      *
-     * @param onlyStringAndPrimitives Whether this TableView only displays String and Primitives while ignore all other types.
+     * @param stringAndPrimitivesOnly Whether this TableView only displays String and Primitives while ignore all other types.
      */
-    public void setOnlyStringAndPrimitives(boolean onlyStringAndPrimitives) {
-        this.onlyStringAndPrimitives.set(onlyStringAndPrimitives);
+    public void setStringAndPrimitivesOnly(boolean stringAndPrimitivesOnly) {
+        this.stringAndPrimitivesOnly.set(stringAndPrimitivesOnly);
     }
 
     /**
@@ -259,6 +269,15 @@ public class TableViewX<S> extends TableView<S> {
      */
     public void setTitleStyle(TitleStyle titleStyle) {
         this.titleStyle.set(titleStyle);
+    }
+
+    /**
+     * Gets the return types from the properties which will be forced to display.
+     *
+     * @return The types that will be forced to display on the TableView.
+     */
+    public List<Class> getForcedDisplayTypes() {
+        return forcedDisplayTypes;
     }
 
     /**

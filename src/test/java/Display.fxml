@@ -6,6 +6,8 @@
          xmlns="http://javafx.com/javafx/8.0.121">
     <TableViewX fx:id="tableViewX"
                 displayHashCode="true"
+                rowCounting="true"
+                stringAndPrimitivesOnly="true"
                 titleStyle="CAPITALIZE_SPACING"
     />
 </fx:root>
