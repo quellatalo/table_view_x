@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TableView X is an attempt to improve TableView to be able to handle custom user-defined types as data.
@@ -63,77 +64,58 @@ public class TableViewX<S> extends TableView<S> {
         getItems().clear();
         if (items != null && !items.isEmpty()) {
             Class c = items.get(0).getClass();
-            Method[] methods = c.getMethods();
-            boolean isGetter;
-            String name;
-            for (Method method : methods) {
-                if (method.getParameterCount() == 0) {
-                    isGetter = false;
-                    name = method.getName();
-                    if (name.startsWith("get")) {
-                        name = method.getName().substring(3);
-                        isGetter = true;
-                    } else if (name.startsWith("is")) {
-                        name = name.substring(2);
-                        isGetter = true;
-                    } else if (name.startsWith("has")) {
-                        isGetter = true;
-                    }
-                    if (isGetter) {
-                        if (!displayClass.get() && name.equals("Class")) continue;
-                        if (!displayHashCode.get() && name.equals("hashCode")) continue;
-                        Class propType = method.getReturnType();
-                        // add column
-                        if (
-                                propType != Void.TYPE && (
-                                        !stringAndPrimitivesOnly.get()
-                                                || propType.isPrimitive()
-                                                || propType == String.class
-                                                || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
-                                )
-                                ) {
-                            String capitalizedName = StringUtils.capitalizeFirstLetter(name);
-                            switch (titleStyle.get()) {
-                                default:
-                                case ORIGINAL:
-                                    break;
-                                case CAPITALIZE:
-                                    name = capitalizedName;
-                                    break;
-                                case CAPITALIZE_SPACING:
-                                    name = StringUtils.spacing(capitalizedName);
-                                    break;
-                                case ORIGINAL_SPACING:
-                                    name = StringUtils.spacing(name);
-                                    break;
-                                case UPPERCASE_ALL:
-                                    name = name.toUpperCase();
-                                    break;
-                                case LOWERCASE_ALL:
-                                    name = name.toLowerCase();
-                                    break;
-                                case UPPERCASE_ALL_SPACING:
-                                    name = StringUtils.spacing(name.toUpperCase());
-                                    break;
-                                case LOWERCASE_SPACING:
-                                    name = StringUtils.spacing(name).toLowerCase();
-                                    break;
-                            }
-                            TableColumn<S, Object> column = new TableColumn<>(name);
-                            getColumns().add(column);
-                            column.setCellValueFactory(param -> {
-                                Object o = null;
-                                try {
-                                    o = method.invoke(param.getValue());
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                                return new SimpleObjectProperty<>(o);
-                            });
+            Map<String, Method> getters = ClassUtils.getGetters(c);
+            getters.forEach((s, method) -> {
+                if (!(!displayClass.get() && s.equals("Class")) && !(!displayHashCode.get() && s.equals("hashCode"))) {
+                    String displayLabel = s;
+                    Class propType = method.getReturnType();
+                    // add column
+                    if (
+                            !stringAndPrimitivesOnly.get()
+                                    || propType.isPrimitive()
+                                    || propType == String.class
+                                    || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
+                            ) {
+                        switch (titleStyle.get()) {
+                            default:
+                            case ORIGINAL:
+                                break;
+                            case CAPITALIZE:
+                                displayLabel = StringUtils.capitalizeFirstLetter(displayLabel);
+                                break;
+                            case CAPITALIZE_SPACING:
+                                displayLabel = StringUtils.spacing(StringUtils.capitalizeFirstLetter(displayLabel));
+                                break;
+                            case ORIGINAL_SPACING:
+                                displayLabel = StringUtils.spacing(displayLabel);
+                                break;
+                            case UPPERCASE_ALL:
+                                displayLabel = displayLabel.toUpperCase();
+                                break;
+                            case LOWERCASE_ALL:
+                                displayLabel = displayLabel.toLowerCase();
+                                break;
+                            case UPPERCASE_ALL_SPACING:
+                                displayLabel = StringUtils.spacing(displayLabel.toUpperCase());
+                                break;
+                            case LOWERCASE_SPACING:
+                                displayLabel = StringUtils.spacing(displayLabel).toLowerCase();
+                                break;
                         }
+                        TableColumn<S, Object> column = new TableColumn<>(displayLabel);
+                        getColumns().add(column);
+                        column.setCellValueFactory(param -> {
+                            Object o = null;
+                            try {
+                                o = method.invoke(param.getValue());
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
+                            return new SimpleObjectProperty<>(o);
+                        });
                     }
                 }
-            }
+            });
             getColumns().sort(Comparator.comparing(TableColumnBase::getText));
             if (rowCounting.get()) {
                 TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
@@ -316,5 +298,37 @@ public class TableViewX<S> extends TableView<S> {
          * Add spaces between words, and turn all characters into lowercase.
          */
         LOWERCASE_SPACING
+    }
+
+    public BooleanProperty rowCountingProperty() {
+        return rowCounting;
+    }
+
+    public boolean isStringAndPrimitivesOnly() {
+        return stringAndPrimitivesOnly.get();
+    }
+
+    public BooleanProperty stringAndPrimitivesOnlyProperty() {
+        return stringAndPrimitivesOnly;
+    }
+
+    public BooleanProperty displayClassProperty() {
+        return displayClass;
+    }
+
+    public BooleanProperty displayHashCodeProperty() {
+        return displayHashCode;
+    }
+
+    public IntegerProperty baseIndexProperty() {
+        return baseIndex;
+    }
+
+    public StringProperty rowCounterTitleProperty() {
+        return rowCounterTitle;
+    }
+
+    public ObjectProperty<TitleStyle> titleStyleProperty() {
+        return titleStyle;
     }
 }
