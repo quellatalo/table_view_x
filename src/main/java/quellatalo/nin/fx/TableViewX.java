@@ -29,7 +29,7 @@ public class TableViewX<S> extends TableView<S> {
     private IntegerProperty baseIndex;
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
-    private List<Class> forcedDisplayTypes;
+    private List<Class<?>> forcedDisplayTypes;
 
     /**
      * Construct a TableViewX.
@@ -119,7 +119,7 @@ public class TableViewX<S> extends TableView<S> {
                                     name = StringUtils.spacing(name).toLowerCase();
                                     break;
                             }
-                            TableColumn<S, ?> column = new TableColumn<>(name);
+                            TableColumn<S, Object> column = new TableColumn<>(name);
                             getColumns().add(column);
                             column.setCellValueFactory(param -> {
                                 Object o = null;
@@ -128,7 +128,7 @@ public class TableViewX<S> extends TableView<S> {
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     e.printStackTrace();
                                 }
-                                return new SimpleObjectProperty(o);
+                                return new SimpleObjectProperty<>(o);
                             });
                         }
                     }
@@ -276,7 +276,7 @@ public class TableViewX<S> extends TableView<S> {
      *
      * @return The types that will be forced to display on the TableView.
      */
-    public List<Class> getForcedDisplayTypes() {
+    public List<Class<?>> getForcedDisplayTypes() {
         return forcedDisplayTypes;
     }
 
