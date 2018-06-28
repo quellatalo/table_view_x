@@ -67,7 +67,6 @@ public class TableViewX<S> extends TableView<S> {
             Map<String, Method> getters = ClassUtils.getGetters(c);
             getters.forEach((s, method) -> {
                 if (!(!displayClass.get() && s.equals("Class")) && !(!displayHashCode.get() && s.equals("hashCode"))) {
-                    String displayLabel = s;
                     Class propType = method.getReturnType();
                     // add column
                     if (
@@ -76,32 +75,7 @@ public class TableViewX<S> extends TableView<S> {
                                     || propType == String.class
                                     || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
                             ) {
-                        switch (titleStyle.get()) {
-                            default:
-                            case ORIGINAL:
-                                break;
-                            case CAPITALIZE:
-                                displayLabel = StringUtils.capitalizeFirstLetter(displayLabel);
-                                break;
-                            case CAPITALIZE_SPACING:
-                                displayLabel = StringUtils.spacing(StringUtils.capitalizeFirstLetter(displayLabel));
-                                break;
-                            case ORIGINAL_SPACING:
-                                displayLabel = StringUtils.spacing(displayLabel);
-                                break;
-                            case UPPERCASE_ALL:
-                                displayLabel = displayLabel.toUpperCase();
-                                break;
-                            case LOWERCASE_ALL:
-                                displayLabel = displayLabel.toLowerCase();
-                                break;
-                            case UPPERCASE_ALL_SPACING:
-                                displayLabel = StringUtils.spacing(displayLabel.toUpperCase());
-                                break;
-                            case LOWERCASE_SPACING:
-                                displayLabel = StringUtils.spacing(displayLabel).toLowerCase();
-                                break;
-                        }
+                        String displayLabel = TitleStyle.transform(s, titleStyle.get());
                         TableColumn<S, Object> column = new TableColumn<>(displayLabel);
                         getColumns().add(column);
                         column.setCellValueFactory(param -> {
@@ -260,44 +234,6 @@ public class TableViewX<S> extends TableView<S> {
      */
     public List<Class<?>> getForcedDisplayTypes() {
         return forcedDisplayTypes;
-    }
-
-    /**
-     * Column header naming styles.
-     */
-    public enum TitleStyle {
-        /**
-         * No change.
-         */
-        ORIGINAL,
-        /**
-         * Capitalize the first letter.
-         */
-        CAPITALIZE,
-        /**
-         * Turn all characters into uppercase.
-         */
-        UPPERCASE_ALL,
-        /**
-         * Turn all characters into lowercase.
-         */
-        LOWERCASE_ALL,
-        /**
-         * Add spaces between words.
-         */
-        ORIGINAL_SPACING,
-        /**
-         * Add spaces between words, and capitalize the first letters.
-         */
-        CAPITALIZE_SPACING,
-        /**
-         * Add spaces between words, and turn all characters into uppercase.
-         */
-        UPPERCASE_ALL_SPACING,
-        /**
-         * Add spaces between words, and turn all characters into lowercase.
-         */
-        LOWERCASE_SPACING
     }
 
     public BooleanProperty rowCountingProperty() {
