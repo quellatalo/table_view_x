@@ -65,9 +65,9 @@ public class TableViewX<S> extends TableView<S> {
         if (items != null && !items.isEmpty()) {
             Class c = items.get(0).getClass();
             Map<String, Method> getters = ClassUtils.getGetters(c);
-            getters.forEach((s, method) -> {
-                if (!(!displayClass.get() && s.equals("Class")) && !(!displayHashCode.get() && s.equals("hashCode"))) {
-                    Class propType = method.getReturnType();
+            for (Map.Entry<String, Method> set : getters.entrySet()) {
+                if (!(!displayClass.get() && set.getKey().equals("Class")) && !(!displayHashCode.get() && set.getKey().equals("hashCode"))) {
+                    Class propType = set.getValue().getReturnType();
                     // add column
                     if (
                             !stringAndPrimitivesOnly.get()
@@ -75,13 +75,13 @@ public class TableViewX<S> extends TableView<S> {
                                     || propType == String.class
                                     || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
                             ) {
-                        String displayLabel = TitleStyle.transform(s, titleStyle.get());
+                        String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
                         TableColumn<S, Object> column = new TableColumn<>(displayLabel);
                         getColumns().add(column);
                         column.setCellValueFactory(param -> {
                             Object o = null;
                             try {
-                                o = method.invoke(param.getValue());
+                                o = set.getValue().invoke(param.getValue());
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
@@ -89,7 +89,7 @@ public class TableViewX<S> extends TableView<S> {
                         });
                     }
                 }
-            });
+            }
             getColumns().sort(Comparator.comparing(TableColumnBase::getText));
             if (rowCounting.get()) {
                 TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
