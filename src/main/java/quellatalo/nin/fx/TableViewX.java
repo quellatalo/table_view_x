@@ -8,10 +8,7 @@ import javafx.scene.control.TableView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TableView X is an attempt to improve TableView to be able to handle custom user-defined types as data.
@@ -27,6 +24,7 @@ public class TableViewX<S> extends TableView<S> {
     private BooleanProperty stringAndPrimitivesOnly;
     private BooleanProperty displayClass;
     private BooleanProperty displayHashCode;
+    private BooleanProperty displayMapsAndCollections;
     private IntegerProperty baseIndex;
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
@@ -40,6 +38,7 @@ public class TableViewX<S> extends TableView<S> {
         stringAndPrimitivesOnly = new SimpleBooleanProperty(this, "stringAndPrimitivesOnly", true);
         displayClass = new SimpleBooleanProperty(this, "displayClass", false);
         displayHashCode = new SimpleBooleanProperty(this, "displayHashCode", false);
+        displayMapsAndCollections = new SimpleBooleanProperty(this, "displayMapsAndCollections", false);
         baseIndex = new SimpleIntegerProperty(this, "baseIndex", DEFAULT_BASE_INDEX);
         rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
@@ -66,29 +65,29 @@ public class TableViewX<S> extends TableView<S> {
             Class c = items.get(0).getClass();
             Map<String, Method> getters = ClassUtils.getGetters(c);
             for (Map.Entry<String, Method> set : getters.entrySet()) {
-                if (!(!displayClass.get() && set.getKey().equals("Class")) && !(!displayHashCode.get() && set.getKey().equals("hashCode"))) {
-                    Class propType = set.getValue().getReturnType();
-                    // add column
-                    if (
-                            !stringAndPrimitivesOnly.get()
-                                    || propType.isPrimitive()
-                                    || propType == String.class
-                                    || ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
-                            ) {
-                        String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
-                        TableColumn<S, Object> column = new TableColumn<>(displayLabel);
-                        getColumns().add(column);
-                        column.setCellValueFactory(param -> {
-                            Object o = null;
-                            try {
-                                o = set.getValue().invoke(param.getValue());
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
-                            return new SimpleObjectProperty<>(o);
-                        });
+                Class<?> propType = set.getValue().getReturnType();
+                // todo: might need to simplify these filters
+                if (set.getKey().equals("hashCode") && !displayHashCode.get()) continue;
+                if ((Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections.get())
+                    continue;
+                if (set.getKey().equals("Class") && !displayClass.get()) continue;
+                if (stringAndPrimitivesOnly.get() &&
+                        !(propType.isPrimitive() || propType == String.class) &&
+                        !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes) &&
+                        (set.getKey().equals("Class") && !displayClass.get()))
+                    continue;
+                String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
+                TableColumn<S, Object> column = new TableColumn<>(displayLabel);
+                getColumns().add(column);
+                column.setCellValueFactory(param -> {
+                    Object o = null;
+                    try {
+                        o = set.getValue().invoke(param.getValue());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
                     }
-                }
+                    return new SimpleObjectProperty<>(o);
+                });
             }
             getColumns().sort(Comparator.comparing(TableColumnBase::getText));
             if (rowCounting.get()) {

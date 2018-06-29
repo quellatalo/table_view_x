@@ -21,6 +21,7 @@ public class Display extends AnchorPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+        tableViewX.setStringAndPrimitivesOnly(false);
     }
 
     public void setContent(List<Sample> content) {
