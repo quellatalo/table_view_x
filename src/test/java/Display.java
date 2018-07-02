@@ -6,10 +6,10 @@ import quellatalo.nin.fx.TableViewX;
 import java.io.IOException;
 import java.util.List;
 
-public class Display extends AnchorPane {
+public class Display<T> extends AnchorPane {
 
     @FXML
-    private TableViewX<Sample> tableViewX;
+    private TableViewX<T> tableViewX;
 
     public Display() {
         System.out.println(getClass().getClassLoader().getResource("Display.fxml"));
@@ -24,8 +24,7 @@ public class Display extends AnchorPane {
         tableViewX.setStringAndPrimitivesOnly(false);
     }
 
-    public void setContent(List<Sample> content) {
+    public void setContent(List<T> content) {
         tableViewX.setContent(content);
-        tableViewX.getColumns().forEach(sampleTableColumn -> System.out.println(sampleTableColumn.getText()));
     }
 }

@@ -14,9 +14,9 @@ import java.util.*;
  * TableView X is an attempt to improve TableView to be able to handle custom user-defined types as data.
  * By using reflection, it will read the data structure, and create columns for all properties.
  *
- * @param <S> Specific type this TableView accepts.
+ * @param <T> Specific type this TableView accepts.
  */
-public class TableViewX<S> extends TableView<S> {
+public class TableViewX<T> extends TableView {
     public static final int DEFAULT_BASE_INDEX = 0;
     public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
 
@@ -29,6 +29,7 @@ public class TableViewX<S> extends TableView<S> {
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
     private List<Class<?>> forcedDisplayTypes;
+    private Comparator<TableColumn<T, ?>> columnComparator;
 
     /**
      * Construct a TableViewX.
@@ -43,12 +44,14 @@ public class TableViewX<S> extends TableView<S> {
         rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
         forcedDisplayTypes = new ArrayList<>();
+        columnComparator = Comparator.comparing(TableColumnBase::getText);
+        columnComparator = Comparator.comparing(TableColumnBase::getText);
     }
 
     /**
      * Construct a TableViewX with specified content.
      */
-    public TableViewX(ObservableList<S> items) {
+    public TableViewX(ObservableList<T> items) {
         this();
         setContent(items);
     }
@@ -58,45 +61,62 @@ public class TableViewX<S> extends TableView<S> {
      *
      * @param items List of items to display.
      */
-    public void setContent(List<S> items) {
+    public void setContent(List<T> items) {
         getColumns().clear();
         getItems().clear();
         if (items != null && !items.isEmpty()) {
             Class c = items.get(0).getClass();
-            Map<String, Method> getters = ClassUtils.getGetters(c);
-            for (Map.Entry<String, Method> set : getters.entrySet()) {
-                Class<?> propType = set.getValue().getReturnType();
-                // todo: might need to simplify these filters
-                if (set.getKey().equals("hashCode") && !displayHashCode.get()) continue;
-                if ((Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections.get())
-                    continue;
-                if (set.getKey().equals("Class") && !displayClass.get()) continue;
-                if (stringAndPrimitivesOnly.get() &&
-                        !(propType.isPrimitive() || propType == String.class) &&
-                        !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes) &&
-                        (set.getKey().equals("Class") && !displayClass.get()))
-                    continue;
-                String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
-                TableColumn<S, Object> column = new TableColumn<>(displayLabel);
+            if (c == String.class || c == Byte.class || c == Character.class || c == Short.class || c == Integer.class || c == Long.class || c == Float.class || c == Double.class || c == Boolean.class || c == Void.class) {
+                List<StringView<T>> tv = new ArrayList<>();
+                for (int i = baseIndex.get(); i < items.size() + baseIndex.get(); i++) {
+                    tv.add(new StringView<>(i + baseIndex.get(), items.get(i)));
+                }
+                if (rowCounting.get()) {
+                    TableColumn<StringView<T>, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
+                    indexColumn.setSortable(false);
+                    indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue().getIndex()));
+                    getColumns().add(0, indexColumn);
+                }
+                TableColumn<StringView<T>, Object> column = new TableColumn<>();
+                column.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getValue()));
                 getColumns().add(column);
-                column.setCellValueFactory(param -> {
-                    Object o = null;
-                    try {
-                        o = set.getValue().invoke(param.getValue());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    return new SimpleObjectProperty<>(o);
-                });
+                getItems().addAll(tv);
+            } else {
+                Map<String, Method> getters = ClassUtils.getGetters(c);
+                for (Map.Entry<String, Method> set : getters.entrySet()) {
+                    Class<?> propType = set.getValue().getReturnType();
+                    // todo: might need to simplify these filters
+                    if (set.getKey().equals("hashCode") && !displayHashCode.get()) continue;
+                    if ((Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections.get())
+                        continue;
+                    if (set.getKey().equals("Class") && !displayClass.get()) continue;
+                    if (stringAndPrimitivesOnly.get() &&
+                            !(propType.isPrimitive() || propType == String.class) &&
+                            !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes) &&
+                            (set.getKey().equals("Class") && !displayClass.get()))
+                        continue;
+                    String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
+                    TableColumn<T, Object> column = new TableColumn<>(displayLabel);
+                    getColumns().add(column);
+                    column.setCellValueFactory(param -> {
+                        Object o = null;
+                        try {
+                            o = set.getValue().invoke(param.getValue());
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        return new SimpleObjectProperty<>(o);
+                    });
+                }
+                getColumns().sort(columnComparator);
+                if (rowCounting.get()) {
+                    TableColumn<T, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
+                    indexColumn.setSortable(false);
+                    indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
+                    getColumns().add(0, indexColumn);
+                }
+                getItems().addAll(items);
             }
-            getColumns().sort(Comparator.comparing(TableColumnBase::getText));
-            if (rowCounting.get()) {
-                TableColumn<S, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
-                indexColumn.setSortable(false);
-                indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
-                getColumns().add(0, indexColumn);
-            }
-            getItems().addAll(items);
         }
     }
 
@@ -265,5 +285,25 @@ public class TableViewX<S> extends TableView<S> {
 
     public ObjectProperty<TitleStyle> titleStyleProperty() {
         return titleStyle;
+    }
+
+    public boolean isDisplayMapsAndCollections() {
+        return displayMapsAndCollections.get();
+    }
+
+    public void setDisplayMapsAndCollections(boolean displayMapsAndCollections) {
+        this.displayMapsAndCollections.set(displayMapsAndCollections);
+    }
+
+    public BooleanProperty displayMapsAndCollectionsProperty() {
+        return displayMapsAndCollections;
+    }
+
+    public Comparator<TableColumn<T, ?>> getColumnComparator() {
+        return columnComparator;
+    }
+
+    public void setColumnComparator(Comparator<TableColumn<T, ?>> columnComparator) {
+        this.columnComparator = columnComparator;
     }
 }
