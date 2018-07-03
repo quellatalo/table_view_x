@@ -1,10 +1,10 @@
 package quellatalo.nin.fx;
 
-public class StringView<T> {
+class PrimView<T> {
     private final int index;
     private final T value;
 
-    public StringView(int index, T value) {
+    public PrimView(int index, T value) {
         this.index = index;
         this.value = value;
     }
