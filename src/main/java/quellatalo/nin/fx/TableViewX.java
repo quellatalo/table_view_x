@@ -91,9 +91,12 @@ public class TableViewX<T> extends TableView {
                         continue;
                     if (set.getKey().equals("Class") && !displayClass.get()) continue;
                     if (stringAndPrimitivesOnly.get() &&
-                            !(propType.isPrimitive() || propType == String.class) &&
-                            !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes) &&
-                            (set.getKey().equals("Class") && !displayClass.get()))
+                            (
+                                    !(propType.isPrimitive() || propType == String.class) &&
+                                            !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
+                            ) ||
+                            (set.getKey().equals("Class") && !displayClass.get()) ||
+                            (set.getKey().equals("hashCode") && !displayHashCode.get()))
                         continue;
                     String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
                     TableColumn<T, Object> column = new TableColumn<>(displayLabel);
