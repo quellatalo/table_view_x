@@ -18,10 +18,6 @@ public class Sample {
         this.name = name;
     }
 
-    public void print() {
-        System.out.println(getClass().getDeclaredFields().length);
-    }
-
     public int getId() {
         return id;
     }
