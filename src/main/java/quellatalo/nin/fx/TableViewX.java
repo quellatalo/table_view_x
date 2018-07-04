@@ -67,17 +67,17 @@ public class TableViewX<T> extends TableView {
         if (items != null && !items.isEmpty()) {
             Class c = items.get(0).getClass();
             if (c == String.class || c == Byte.class || c == Character.class || c == Short.class || c == Integer.class || c == Long.class || c == Float.class || c == Double.class || c == Boolean.class || c == Void.class) {
-                List<PrimView<T>> tv = new ArrayList<>();
+                List<PrimRow<T>> tv = new ArrayList<>();
                 for (int i = baseIndex.get(); i < items.size() + baseIndex.get(); i++) {
-                    tv.add(new PrimView<>(i + baseIndex.get(), items.get(i)));
+                    tv.add(new PrimRow<>(i + baseIndex.get(), items.get(i)));
                 }
                 if (rowCounting.get()) {
-                    TableColumn<PrimView<T>, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
+                    TableColumn<PrimRow<T>, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
                     indexColumn.setSortable(false);
                     indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue().getIndex()));
                     getColumns().add(0, indexColumn);
                 }
-                TableColumn<PrimView<T>, Object> column = new TableColumn<>();
+                TableColumn<PrimRow<T>, Object> column = new TableColumn<>();
                 column.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getValue()));
                 getColumns().add(column);
                 getItems().addAll(tv);
