@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class SearchItem<T> extends HBox {
+public class SearchItem extends HBox {
     private ComboBox<String> field;
     private ComboBox<ICondition> condition;
     private Control tfValue;

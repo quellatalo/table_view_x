@@ -17,7 +17,7 @@ public class LazAdvSearchDialog extends Alert {
     private boolean displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly;
     private List<Class<?>> forcedDisplayTypes;
     private EventHandler<ActionEvent> removeItem;
-    private List<SearchItem<?>> searchItems;
+    private List<SearchItem> searchItems;
 
     public LazAdvSearchDialog(String title) {
         super(AlertType.CONFIRMATION);
@@ -34,7 +34,7 @@ public class LazAdvSearchDialog extends Alert {
             searchItems.remove(event.getSource());
         };
         hplNewCondition.setOnAction(event -> {
-            SearchItem<?> searchItem = new SearchItem<>(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
+            SearchItem searchItem = new SearchItem(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
             searchItem.setRemoveAction(removeItem);
             vBox.getChildren().add(searchItem);
             searchItems.add(searchItem);
@@ -54,7 +54,7 @@ public class LazAdvSearchDialog extends Alert {
             vBox.getChildren().clear();
             searchItems.clear();
             vBox.getChildren().add(hplNewCondition);
-            SearchItem<?> searchItem = new SearchItem<>(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
+            SearchItem searchItem = new SearchItem(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
             searchItem.setRemoveAction(removeItem);
             vBox.getChildren().add(searchItem);
             searchItems.add(searchItem);
