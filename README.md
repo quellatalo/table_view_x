@@ -1,9 +1,6 @@
 # table_view_x
 TableViewX is an attempt to improve TableView to be able to handle custom user-defined types as data.  By using reflection, it will read the data structure and create columns for all properties.
 
-###Dependencies:
-* https://github.com/edvin/tornadofx-controls is need for DateTimePicker control, if the filter with LocalDateTime type is used.
-
 ###Sample code:
 
 #####Sample Class
