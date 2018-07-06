@@ -29,8 +29,11 @@ public enum NumericCondition implements ICondition {
                 b = subject <= value;
                 break;
             case DIFFERS:
-            default:
                 b = subject != value;
+                break;
+            default:
+                b = false;
+                break;
         }
         return b;
     }

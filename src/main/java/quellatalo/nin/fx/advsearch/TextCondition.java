@@ -20,11 +20,13 @@ public enum TextCondition implements ICondition {
                 b = subject.endsWith(value);
                 break;
             case CONTAINS:
-            default:
                 b = subject.contains(value);
                 break;
             case DIFFERS:
                 b = !subject.equals(value);
+                break;
+            default:
+                b = false;
                 break;
         }
         return b;
