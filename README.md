@@ -1,10 +1,12 @@
 # table_view_x
 TableViewX is an attempt to improve TableView to be able to handle custom user-defined types as data.  By using reflection, it will read the data structure and create columns for all properties.
 
+###Dependencies:
+* https://github.com/edvin/tornadofx-controls is need for DateTimePicker control, if the filter with LocalDateTime type is used.
 
-Sample code:
+###Sample code:
 
-Sample Class
+#####Sample Class
 ```java
 public class Sample {
     private int id;
@@ -41,12 +43,12 @@ public class Sample {
 }
 ```
 
-FXML
+#####FXML
 ```xml
 <TableViewX fx:id="tableViewX" displayHashCode="true" titleStyle="CAPITALIZE_SPACING"/>
 ```
 
-Controller
+#####Controller
 ```java
 @FXML
 TableViewX<Sample> tableViewX;
@@ -77,6 +79,10 @@ TableViewX<Sample> tableViewX;
         //// In case you want to display some specific properties which return a custom type
         //// It will display the result of toString()
         //tableViewX.getForcedDisplayTypes().add(SomeType.class);
+        // [OPTIONAL] Display Map and Collection properties also
+        tableViewX.setDisplayMapsAndCollections(true);
+        // [OPTIONAL] enable the tableviewx to show filter dialog when righ-clicked
+        tableViewX.setRightClickFilter(true);
 
         // Sets the contents
         tableViewX.setContent(samples);

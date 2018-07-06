@@ -12,7 +12,6 @@ public class Display<T> extends AnchorPane {
     private TableViewX<T> tableViewX;
 
     public Display() {
-        System.out.println(getClass().getClassLoader().getResource("Display.fxml"));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Display.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -26,5 +25,9 @@ public class Display<T> extends AnchorPane {
 
     public void setContent(List<T> content) {
         tableViewX.setContent(content);
+    }
+
+    public void showFilter() {
+        tableViewX.filter();
     }
 }
