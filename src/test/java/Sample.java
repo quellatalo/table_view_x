@@ -1,13 +1,14 @@
+import java.time.LocalDateTime;
+
 public class Sample {
     private int id;
     private String name;
-
-    public Sample() {
-    }
+    private LocalDateTime time;
 
     public Sample(int id, String name) {
         this.id = id;
         this.name = name;
+        time = LocalDateTime.now();
     }
 
     public int getId() {
@@ -24,6 +25,14 @@ public class Sample {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 
     @Override

@@ -8,14 +8,6 @@
     <artifactId>table_view_x</artifactId>
     <version>1.5</version>
 
-    <dependencies>
-        <dependency>
-            <groupId>no.tornado</groupId>
-            <artifactId>tornadofx-controls</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>

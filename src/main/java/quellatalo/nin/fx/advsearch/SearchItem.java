@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import quellatalo.nin.fx.ClassUtils;
-import tornadofx.control.DateTimePicker;
+import quellatalo.nin.fx.datetime.DateTimePicker;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

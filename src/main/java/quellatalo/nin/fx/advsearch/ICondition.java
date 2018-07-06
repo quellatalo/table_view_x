@@ -3,7 +3,7 @@ package quellatalo.nin.fx.advsearch;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import quellatalo.nin.fx.ClassUtils;
-import tornadofx.control.DateTimePicker;
+import quellatalo.nin.fx.datetime.DateTimePicker;
 
 import java.time.LocalDateTime;
 
