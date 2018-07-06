@@ -8,7 +8,7 @@ public enum NumericCondition implements ICondition {
     LESSER_THAN_OR_EQUAL,
     GREATER_THAN,
     GREATER_THAN_OR_EQUAL,
-    NOT_EQUAL;
+    DIFFERS;
 
     public static boolean generateBoolean(double subject, NumericCondition condition, double value) {
         boolean b;
@@ -28,7 +28,7 @@ public enum NumericCondition implements ICondition {
             case LESSER_THAN_OR_EQUAL:
                 b = subject <= value;
                 break;
-            case NOT_EQUAL:
+            case DIFFERS:
             default:
                 b = subject != value;
         }
@@ -53,7 +53,7 @@ public enum NumericCondition implements ICondition {
             case LESSER_THAN_OR_EQUAL:
                 b = subject.isBefore(value) || subject.equals(value);
                 break;
-            case NOT_EQUAL:
+            case DIFFERS:
             default:
                 b = !subject.isEqual(value);
         }

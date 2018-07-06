@@ -4,7 +4,8 @@ public enum TextCondition implements ICondition {
     CONTAINS,
     EQUALS,
     STARTS_WITH,
-    ENDS_WITH;
+    ENDS_WITH,
+    DIFFERS;
 
     public static boolean generateBoolean(String subject, TextCondition condition, String value) {
         boolean b;
@@ -21,6 +22,9 @@ public enum TextCondition implements ICondition {
             case CONTAINS:
             default:
                 b = subject.contains(value);
+                break;
+            case DIFFERS:
+                b = !subject.equals(value);
                 break;
         }
         return b;
