@@ -1,9 +1,9 @@
 # table_view_x
 TableViewX is an attempt to improve TableView to be able to handle custom user-defined types as data.  By using reflection, it will read the data structure and create columns for all properties.
 
-###Sample code:
+### Sample code:
 
-####Sample Class
+##### Sample Class
 ```java
 public class Sample {
     private int id;
@@ -40,12 +40,12 @@ public class Sample {
 }
 ```
 
-####FXML
+##### FXML
 ```xml
 <TableViewX fx:id="tableViewX" displayHashCode="true" titleStyle="CAPITALIZE_SPACING"/>
 ```
 
-####Controller
+##### Controller
 ```java
 @FXML
 TableViewX<Sample> tableViewX;
