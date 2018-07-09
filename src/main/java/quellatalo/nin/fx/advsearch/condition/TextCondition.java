@@ -1,4 +1,4 @@
-package quellatalo.nin.fx.advsearch;
+package quellatalo.nin.fx.advsearch.condition;
 
 public enum TextCondition implements ICondition {
     CONTAINS,

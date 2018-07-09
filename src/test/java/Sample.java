@@ -4,6 +4,7 @@ public class Sample {
     private int id;
     private String name;
     private LocalDateTime time;
+    private String[] args;
 
     public Sample(int id, String name) {
         this.id = id;
@@ -38,5 +39,13 @@ public class Sample {
     @Override
     public String toString() {
         return "id -> " + id + ", name -> " + name;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
     }
 }

@@ -7,7 +7,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
-import quellatalo.nin.fx.advsearch.LazAdvSearchDialog;
+import quellatalo.nin.fx.advsearch.LazAdvFilterDialog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +37,8 @@ public class TableViewX<T> extends TableView {
     private Comparator<TableColumn<T, ?>> columnComparator;
     private List<T> content;
     private List<PrimRow<T>> maskedContent;
-    private LazAdvSearchDialog advSearchDialog;
+    private LazAdvFilterDialog advFilterDialog;
+    private boolean needPrepareFilter;
 
     /**
      * Construct a TableViewX.
@@ -55,16 +56,17 @@ public class TableViewX<T> extends TableView {
         forcedDisplayTypes = new ArrayList<>();
         columnComparator = Comparator.comparing(TableColumnBase::getText);
         columnComparator = Comparator.comparing(TableColumnBase::getText);
-        advSearchDialog = new LazAdvSearchDialog("Filter");
         setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY && rightClickFilter.get()) {
                 filter();
             }
         });
+        needPrepareFilter = true;
     }
 
     /**
      * Construct a TableViewX with specified content.
+     * @param items List of items to display.
      */
     public TableViewX(ObservableList<T> items) {
         this();
@@ -287,22 +289,20 @@ public class TableViewX<T> extends TableView {
                 getColumns().add(column);
                 getItems().addAll(maskedContent);
             } else {
-                Map<String, Method> getters = ClassUtils.getGetters(c);
+                Map<String, Method> getters = ClassUtils.getGetters(c, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
                 for (Map.Entry<String, Method> set : getters.entrySet()) {
-                    if (ClassUtils.isEntryQualified(set, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes)) {
-                        String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
-                        TableColumn<T, Object> column = new TableColumn<>(displayLabel);
-                        getColumns().add(column);
-                        column.setCellValueFactory(param -> {
-                            Object o = null;
-                            try {
-                                o = set.getValue().invoke(param.getValue());
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
-                            return new SimpleObjectProperty<>(o);
-                        });
-                    }
+                    String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
+                    TableColumn<T, Object> column = new TableColumn<>(displayLabel);
+                    getColumns().add(column);
+                    column.setCellValueFactory(param -> {
+                        Object o = null;
+                        try {
+                            o = set.getValue().invoke(param.getValue());
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        return new SimpleObjectProperty<>(o);
+                    });
                 }
                 getColumns().sort(columnComparator);
                 if (rowCounting.get()) {
@@ -335,11 +335,30 @@ public class TableViewX<T> extends TableView {
     public void filter() {
         List<?> ct = getMaskedContent();
         if (!ct.isEmpty()) {
-            advSearchDialog.prepare(ct.get(0).getClass(), displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
-            Optional<ButtonType> rs = advSearchDialog.showAndWait();
+            if (advFilterDialog == null) {
+                advFilterDialog = new LazAdvFilterDialog("Filter");
+                advFilterDialog.initOwner(getScene().getWindow());
+            }
+            if (needPrepareFilter) {
+                advFilterDialog.prepare(ct.get(0).getClass(), displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
+                needPrepareFilter = false;
+            }
+            Optional<ButtonType> rs = advFilterDialog.showAndWait();
             if (rs.isPresent() && rs.get() == ButtonType.OK) {
-                getItems().setAll(ct.stream().filter(advSearchDialog.generatePredicate()).collect(Collectors.toList()));
+                getItems().setAll(ct.stream().filter(advFilterDialog.generatePredicate()).collect(Collectors.toList()));
             }
         }
+    }
+
+    public boolean isNeedPrepareFilter() {
+        return needPrepareFilter;
+    }
+
+    public void setNeedPrepareFilter(boolean needPrepareFilter) {
+        this.needPrepareFilter = needPrepareFilter;
+    }
+
+    public LazAdvFilterDialog getAdvFilterDialog() {
+        return advFilterDialog;
     }
 }

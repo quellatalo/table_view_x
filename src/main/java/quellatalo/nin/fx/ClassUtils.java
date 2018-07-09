@@ -1,10 +1,7 @@
 package quellatalo.nin.fx;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClassUtils {
     public static boolean isAssignableFrom(Class type, List<Class<?>> classList) {
@@ -18,8 +15,8 @@ public class ClassUtils {
         return result;
     }
 
-    public static Map<String, Method> getGetters(Class c) {
-        Map<String, Method> rs = new HashMap<>();
+    public static SortedMap<String, Method> getGetters(Class c) {
+        SortedMap<String, Method> rs = new TreeMap<>();
         Method[] methods = c.getMethods();
         for (Method method : methods) {
             if (method.getParameterCount() == 0) {
@@ -42,16 +39,27 @@ public class ClassUtils {
         return rs;
     }
 
+    public static SortedMap<String, Method> getGetters(Class c, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
+        SortedMap<String, Method> getters = getGetters(c);
+        ArrayList<Map.Entry<String, Method>> entrySet = new ArrayList<>(getters.entrySet());
+        for (Map.Entry<String, Method> entry : entrySet) {
+            if (!isEntryQualified(entry, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes)) {
+                getters.remove(entry.getKey());
+            }
+        }
+        return getters;
+    }
+
     public static boolean isNumeric(Class<?> type) {
         return type == Byte.class || type == Character.class || type == Short.class || type == Integer.class || type == Long.class || type == Float.class || type == Double.class ||
                 type == byte.class || type == char.class || type == short.class || type == int.class || type == long.class || type == float.class || type == double.class;
     }
 
-    public static boolean isEntryQualified(Map.Entry<String, Method> set, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
+    private static boolean isEntryQualified(Map.Entry<String, Method> set, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
         boolean b = true;
         Class<?> propType = set.getValue().getReturnType();
         if (set.getKey().equals("hashCode") && !displayHashCode) b = false;
-        else if ((Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections)
+        else if ((propType.isArray() || Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections)
             b = false;
         else if (set.getKey().equals("Class") && !displayClass) b = false;
         else if (stringAndPrimitivesOnly &&

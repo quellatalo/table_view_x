@@ -1,4 +1,4 @@
-package quellatalo.nin.fx.advsearch;
+package quellatalo.nin.fx.advsearch.condition;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
