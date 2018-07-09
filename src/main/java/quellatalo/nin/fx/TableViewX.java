@@ -58,7 +58,7 @@ public class TableViewX<T> extends TableView {
         columnComparator = Comparator.comparing(TableColumnBase::getText);
         setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY && rightClickFilter.get()) {
-                filter();
+                openFilter();
             }
         });
         needPrepareFilter = true;
@@ -66,6 +66,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Construct a TableViewX with specified content.
+     *
      * @param items List of items to display.
      */
     public TableViewX(ObservableList<T> items) {
@@ -332,7 +333,7 @@ public class TableViewX<T> extends TableView {
         return rightClickFilter;
     }
 
-    public void filter() {
+    public void openFilter() {
         List<?> ct = getMaskedContent();
         if (!ct.isEmpty()) {
             if (advFilterDialog == null) {

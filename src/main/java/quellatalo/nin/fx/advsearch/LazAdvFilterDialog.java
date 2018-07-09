@@ -7,17 +7,16 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.VBox;
 import quellatalo.nin.fx.ClassUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class LazAdvFilterDialog extends Alert {
     private final VBox vBox;
     private final Hyperlink hplNewCondition;
-    private final SortedMap<String, Method> searchFields;
+    private final SortedMap<String, SearchField> searchFields;
+    private final Map<String, SearchField> customSearchFields;
     private final List<SearchItem> searchItems;
     private final EventHandler<ActionEvent> removeItem;
 
@@ -33,6 +32,7 @@ public class LazAdvFilterDialog extends Alert {
         hplNewCondition = new Hyperlink("Add Condition");
         searchItems = new ArrayList<>();
         searchFields = new TreeMap<>();
+        customSearchFields = new HashMap<>();
         removeItem = event -> {
             setHeight(getHeight() - 25 - vBox.getSpacing());
             searchItems.remove(event.getSource());
@@ -48,7 +48,19 @@ public class LazAdvFilterDialog extends Alert {
 
     public void prepare(Class<?> type, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
         searchFields.clear();
-        searchFields.putAll(ClassUtils.getGetters(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes));
+        Map<String, Method> getters = ClassUtils.getGetters(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
+        for (Map.Entry<String, Method> entry : getters.entrySet()) {
+            searchFields.put(entry.getKey(), new SearchField(entry.getValue().getReturnType(), o -> {
+                Object rs = null;
+                try {
+                    rs = entry.getValue().invoke(o);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                return rs;
+            }));
+        }
+        searchFields.putAll(customSearchFields);
         vBox.getChildren().clear();
         searchItems.clear();
         vBox.getChildren().add(hplNewCondition);
@@ -61,5 +73,9 @@ public class LazAdvFilterDialog extends Alert {
             rs = rs.and(searchItem.getPredicate());
         }
         return rs;
+    }
+
+    public Map<String, SearchField> getCustomSearchFields() {
+        return customSearchFields;
     }
 }

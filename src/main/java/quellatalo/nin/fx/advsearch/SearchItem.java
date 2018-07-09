@@ -12,8 +12,6 @@ import javafx.scene.layout.Pane;
 import quellatalo.nin.fx.advsearch.condition.ICondition;
 import quellatalo.nin.fx.datetime.DateTimePicker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.SortedMap;
 import java.util.function.Predicate;
@@ -24,12 +22,12 @@ public class SearchItem extends HBox {
     private final Hyperlink hplRemove;
     private final EventHandler<ActionEvent> fieldSelected;
     private final ActionEvent actionEvent;
-    private final Predicate<Object> predicate;
-    private final SortedMap<String, Method> searchFieldMap;
+    private final SortedMap<String, SearchField> searchFieldMap;
+    private Predicate<Object> predicate;
     private Control tfValue;
     private EventHandler<ActionEvent> onRemoveAction;
 
-    public SearchItem(SortedMap<String, Method> searchFields) {
+    public SearchItem(SortedMap<String, SearchField> searchFields) {
         this.searchFieldMap = searchFields;
         setSpacing(5);
         field = new ComboBox<>();
@@ -39,7 +37,7 @@ public class SearchItem extends HBox {
         getChildren().add(condition);
         condition.setPrefWidth(200);
         fieldSelected = event -> {
-            Class<?> returnType = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getReturnType();
+            Class<?> returnType = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getType();
             condition.setItems(FXCollections.observableArrayList(ICondition.getConditions(returnType)));
             getChildren().remove(tfValue);
             tfValue = returnType == LocalDateTime.class ? new DateTimePicker() : new TextField();
@@ -60,22 +58,18 @@ public class SearchItem extends HBox {
             }
         });
         getChildren().add(hplRemove);
-        predicate = o -> {
-            boolean b = true;
-            try {
-                b = ICondition.generateBoolean(
-                        searchFieldMap.get(field.getSelectionModel().getSelectedItem()).invoke(o),
-                        condition.getValue(),
-                        tfValue);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-            return b;
-        };
+        predicate = o -> ICondition.generateBoolean(
+                searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubject().apply(o),
+                condition.getValue(),
+                tfValue);
     }
 
     public Predicate<Object> getPredicate() {
         return predicate;
+    }
+
+    public void setPredicate(Predicate<Object> predicate) {
+        this.predicate = predicate;
     }
 
     public EventHandler<ActionEvent> getOnRemoveAction() {

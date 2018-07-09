@@ -28,6 +28,6 @@ public class Display<T> extends AnchorPane {
     }
 
     public void showFilter() {
-        tableViewX.filter();
+        tableViewX.openFilter();
     }
 }

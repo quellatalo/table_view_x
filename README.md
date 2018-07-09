@@ -83,4 +83,7 @@ TableViewX<Sample> tableViewX;
 
         // Sets the contents
         tableViewX.setContent(samples);
+        
+        // force open filter
+        tableViewX.openFilter();
 ```
