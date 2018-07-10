@@ -7,6 +7,10 @@ import quellatalo.nin.fx.datetime.DateTimePicker;
 
 import java.time.LocalDateTime;
 
+/* TODO:
+ * The architecture in condition package doesn't look good, especially the static generateBoolean.
+ * Maybe it's better allow each enum to contain a BiPredicate... probably it would help making condition more flexible.
+ */
 public interface ICondition {
     static ICondition[] getConditions(Class<?> type) {
         return type == LocalDateTime.class || ClassUtils.isNumeric(type) ? NumericCondition.values() : TextCondition.values();

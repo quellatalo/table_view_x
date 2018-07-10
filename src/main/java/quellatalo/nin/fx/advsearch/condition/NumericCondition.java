@@ -2,7 +2,7 @@ package quellatalo.nin.fx.advsearch.condition;
 
 import java.time.LocalDateTime;
 
-public enum NumericCondition implements ICondition {
+enum NumericCondition implements ICondition {
     EQUALS,
     LESSER_THAN,
     LESSER_THAN_OR_EQUAL,

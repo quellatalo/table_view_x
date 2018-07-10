@@ -1,6 +1,6 @@
 package quellatalo.nin.fx.advsearch.condition;
 
-public enum TextCondition implements ICondition {
+enum TextCondition implements ICondition {
     CONTAINS,
     EQUALS,
     STARTS_WITH,
