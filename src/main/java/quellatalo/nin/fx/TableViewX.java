@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseButton;
 import quellatalo.nin.fx.advsearch.LazAdvFilterDialog;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +28,6 @@ public class TableViewX<T> extends TableView {
     private BooleanProperty displayClass;
     private BooleanProperty displayHashCode;
     private BooleanProperty displayMapsAndCollections;
-    private BooleanProperty rightClickFilter;
     private IntegerProperty baseIndex;
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
@@ -49,18 +47,12 @@ public class TableViewX<T> extends TableView {
         displayClass = new SimpleBooleanProperty(this, "displayClass", false);
         displayHashCode = new SimpleBooleanProperty(this, "displayHashCode", false);
         displayMapsAndCollections = new SimpleBooleanProperty(this, "displayMapsAndCollections", false);
-        rightClickFilter = new SimpleBooleanProperty(this, "rightClickFilter", false);
         baseIndex = new SimpleIntegerProperty(this, "baseIndex", DEFAULT_BASE_INDEX);
         rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
         forcedDisplayTypes = new ArrayList<>();
         columnComparator = Comparator.comparing(TableColumnBase::getText);
         columnComparator = Comparator.comparing(TableColumnBase::getText);
-        setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY && rightClickFilter.get()) {
-                openFilter();
-            }
-        });
         needPrepareFilter = true;
     }
 
@@ -321,30 +313,14 @@ public class TableViewX<T> extends TableView {
         return maskedContent == null ? content : maskedContent;
     }
 
-    public boolean isRightClickFilter() {
-        return rightClickFilter.get();
-    }
-
-    public void setRightClickFilter(boolean rightClickFilter) {
-        this.rightClickFilter.set(rightClickFilter);
-    }
-
-    public BooleanProperty rightClickFilterProperty() {
-        return rightClickFilter;
-    }
-
     public void openFilter() {
         List<?> ct = getMaskedContent();
-        if (!ct.isEmpty()) {
-            if (advFilterDialog == null) {
-                advFilterDialog = new LazAdvFilterDialog("Filter");
-                advFilterDialog.initOwner(getScene().getWindow());
-            }
+        if (ct != null && !ct.isEmpty()) {
             if (needPrepareFilter) {
-                advFilterDialog.prepare(ct.get(0).getClass(), displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
+                getAdvFilterDialog().prepare(ct.get(0).getClass(), displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
                 needPrepareFilter = false;
             }
-            Optional<ButtonType> rs = advFilterDialog.showAndWait();
+            Optional<ButtonType> rs = getAdvFilterDialog().showAndWait();
             if (rs.isPresent() && rs.get() == ButtonType.OK) {
                 getItems().setAll(ct.stream().filter(advFilterDialog.generatePredicate()).collect(Collectors.toList()));
             }
@@ -360,6 +336,10 @@ public class TableViewX<T> extends TableView {
     }
 
     public LazAdvFilterDialog getAdvFilterDialog() {
+        if (advFilterDialog == null) {
+            advFilterDialog = new LazAdvFilterDialog("Filter");
+            advFilterDialog.initOwner(getScene().getWindow());
+        }
         return advFilterDialog;
     }
 }
