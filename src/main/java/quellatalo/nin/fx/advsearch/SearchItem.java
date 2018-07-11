@@ -67,7 +67,7 @@ public class SearchItem extends HBox {
             if (ClassUtils.isNumeric(type)) {
                 b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
             } else if (type == LocalDateTime.class) {
-                b = condition.getValue().test((LocalDateTime) subject, ((DateTimePicker) tfValue).getDateTimeValue());
+                b = condition.getValue().test(subject, ((DateTimePicker) tfValue).getDateTimeValue());
             } else {
                 b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
             }
