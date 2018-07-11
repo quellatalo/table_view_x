@@ -1,38 +1,27 @@
 package quellatalo.nin.fx.advsearch.condition;
 
-enum TextCondition implements ICondition {
-    CONTAINS,
-    EQUALS,
-    STARTS_WITH,
-    ENDS_WITH,
-    DIFFERS,
-    NOT_CONTAINS;
+import java.util.function.BiPredicate;
 
-    public static boolean generateBoolean(String subject, TextCondition condition, String value) {
-        boolean b;
-        switch (condition) {
-            case EQUALS:
-                b = subject.equals(value);
-                break;
-            case STARTS_WITH:
-                b = subject.startsWith(value);
-                break;
-            case ENDS_WITH:
-                b = subject.endsWith(value);
-                break;
-            case CONTAINS:
-                b = subject.contains(value);
-                break;
-            case DIFFERS:
-                b = !subject.equals(value);
-                break;
-            case NOT_CONTAINS:
-                b = !subject.contains(value);
-                break;
-            default:
-                b = false;
-                break;
-        }
-        return b;
+enum TextCondition implements ICondition {
+    CONTAINS((o, o2) -> ((String) o).contains((String) o2)),
+    EQUALS(Object::equals),
+    STARTS_WITH((o, o2) -> ((String) o).startsWith((String) o2)),
+    ENDS_WITH((o, o2) -> ((String) o).endsWith((String) o2)),
+    DIFFERS((o, o2) -> !o.equals(o2)),
+    NOT_CONTAINS((o, o2) -> !(((String) o).contains((String) o2)));
+    private final BiPredicate<Object, Object> biPredicate;
+
+    TextCondition(BiPredicate<Object, Object> biPredicate) {
+        this.biPredicate = biPredicate;
+    }
+
+    @Override
+    public boolean test(Object subject, Object value) {
+        return biPredicate.test(subject, value);
+    }
+
+    @Override
+    public BiPredicate<Object, Object> getBiPredicate() {
+        return biPredicate;
     }
 }

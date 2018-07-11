@@ -1,6 +1,5 @@
 package quellatalo.nin.fx.advsearch;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
@@ -9,6 +8,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import quellatalo.nin.fx.ClassUtils;
 import quellatalo.nin.fx.advsearch.condition.ICondition;
 import quellatalo.nin.fx.datetime.DateTimePicker;
 
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.SortedMap;
 import java.util.function.Predicate;
 
+// TODO: use interface/abstract to have general SearchItem and custom SearchItem
 public class SearchItem extends HBox {
     private final ComboBox<String> field;
     private final ComboBox<ICondition> condition;
@@ -38,7 +39,8 @@ public class SearchItem extends HBox {
         condition.setPrefWidth(200);
         fieldSelected = event -> {
             Class<?> returnType = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getType();
-            condition.setItems(FXCollections.observableArrayList(ICondition.getConditions(returnType)));
+            condition.getItems().clear();
+            condition.getItems().addAll(ICondition.getGeneralConditions(returnType));
             getChildren().remove(tfValue);
             tfValue = returnType == LocalDateTime.class ? new DateTimePicker() : new TextField();
             getChildren().add(2, tfValue);
@@ -58,10 +60,19 @@ public class SearchItem extends HBox {
             }
         });
         getChildren().add(hplRemove);
-        predicate = o -> ICondition.generateBoolean(
-                searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubject().apply(o),
-                condition.getValue(),
-                tfValue);
+        predicate = o -> {
+            boolean b;
+            Object subject = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubject().apply(o);
+            Class<?> type = subject.getClass();
+            if (ClassUtils.isNumeric(type)) {
+                b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
+            } else if (type == LocalDateTime.class) {
+                b = condition.getValue().test((LocalDateTime) subject, ((DateTimePicker) tfValue).getDateTimeValue());
+            } else {
+                b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
+            }
+            return b;
+        };
     }
 
     public Predicate<Object> getPredicate() {

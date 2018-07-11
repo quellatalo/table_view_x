@@ -10,6 +10,5 @@
                 rowCounting="true"
                 stringAndPrimitivesOnly="true"
                 titleStyle="CAPITALIZE_SPACING"
-                rightClickFilter="true"
     />
 </fx:root>
