@@ -2,7 +2,7 @@ package quellatalo.nin.fx.advsearch.condition;
 
 import java.util.function.BiPredicate;
 
-enum NumericCondition implements ICondition {
+public enum NumericCondition implements ICondition {
     EQUALS((o, o2) -> (double) o == (double) o2),
     LESSER_THAN((o, o2) -> (double) o < (double) o2),
     LESSER_THAN_OR_EQUAL((o, o2) -> (double) o <= (double) o2),

@@ -6,8 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.VBox;
 import quellatalo.nin.fx.ClassUtils;
+import quellatalo.nin.fx.advsearch.searchfield.ISearchField;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
@@ -15,8 +15,8 @@ import java.util.function.Predicate;
 public class LazAdvFilterDialog extends Alert {
     private final VBox vBox;
     private final Hyperlink hplNewCondition;
-    private final SortedMap<String, SearchField> searchFields;
-    private final Map<String, SearchField> customSearchFields;
+    private final SortedMap<String, ISearchField> searchFields;
+    private final Map<String, ISearchField> customSearchFields;
     private final List<SearchItem> searchItems;
     private final EventHandler<ActionEvent> removeItem;
 
@@ -50,15 +50,7 @@ public class LazAdvFilterDialog extends Alert {
         searchFields.clear();
         Map<String, Method> getters = ClassUtils.getGetters(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
         for (Map.Entry<String, Method> entry : getters.entrySet()) {
-            searchFields.put(entry.getKey(), new SearchField(entry.getValue().getReturnType(), o -> {
-                Object rs = null;
-                try {
-                    rs = entry.getValue().invoke(o);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                return rs;
-            }));
+            searchFields.put(entry.getKey(), ISearchField.createInstance(entry.getValue()));
         }
         searchFields.putAll(customSearchFields);
         vBox.getChildren().clear();
@@ -75,7 +67,7 @@ public class LazAdvFilterDialog extends Alert {
         return rs;
     }
 
-    public Map<String, SearchField> getCustomSearchFields() {
+    public Map<String, ISearchField> getCustomSearchFields() {
         return customSearchFields;
     }
 }

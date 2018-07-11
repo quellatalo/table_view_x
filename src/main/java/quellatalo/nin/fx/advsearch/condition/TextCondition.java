@@ -2,7 +2,7 @@ package quellatalo.nin.fx.advsearch.condition;
 
 import java.util.function.BiPredicate;
 
-enum TextCondition implements ICondition {
+public enum TextCondition implements ICondition {
     CONTAINS((o, o2) -> ((String) o).contains((String) o2)),
     EQUALS(Object::equals),
     STARTS_WITH((o, o2) -> ((String) o).startsWith((String) o2)),

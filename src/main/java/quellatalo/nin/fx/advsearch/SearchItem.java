@@ -10,8 +10,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import quellatalo.nin.fx.ClassUtils;
 import quellatalo.nin.fx.advsearch.condition.ICondition;
+import quellatalo.nin.fx.advsearch.searchfield.ISearchField;
 import quellatalo.nin.fx.datetime.DateTimePicker;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.SortedMap;
 import java.util.function.Predicate;
@@ -23,12 +25,12 @@ public class SearchItem extends HBox {
     private final Hyperlink hplRemove;
     private final EventHandler<ActionEvent> fieldSelected;
     private final ActionEvent actionEvent;
-    private final SortedMap<String, SearchField> searchFieldMap;
+    private final SortedMap<String, ISearchField> searchFieldMap;
     private Predicate<Object> predicate;
     private Control tfValue;
     private EventHandler<ActionEvent> onRemoveAction;
 
-    public SearchItem(SortedMap<String, SearchField> searchFields) {
+    public SearchItem(SortedMap<String, ISearchField> searchFields) {
         this.searchFieldMap = searchFields;
         setSpacing(5);
         field = new ComboBox<>();
@@ -38,11 +40,13 @@ public class SearchItem extends HBox {
         getChildren().add(condition);
         condition.setPrefWidth(200);
         fieldSelected = event -> {
-            Class<?> returnType = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getType();
-            condition.getItems().clear();
-            condition.getItems().addAll(ICondition.getGeneralConditions(returnType));
+            condition.getItems().setAll(searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getConditions());
             getChildren().remove(tfValue);
-            tfValue = returnType == LocalDateTime.class ? new DateTimePicker() : new TextField();
+            try {
+                tfValue = (Control) searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getValueControlType().getConstructor(null).newInstance(null);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
             getChildren().add(2, tfValue);
             if (condition.getSelectionModel().getSelectedIndex() < 0)
                 condition.getSelectionModel().select(0);
@@ -62,7 +66,7 @@ public class SearchItem extends HBox {
         getChildren().add(hplRemove);
         predicate = o -> {
             boolean b;
-            Object subject = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubject().apply(o);
+            Object subject = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubjectOperator().apply(o);
             Class<?> type = subject.getClass();
             if (ClassUtils.isNumeric(type)) {
                 b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
