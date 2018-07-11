@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.SortedMap;
 import java.util.function.Predicate;
 
-// TODO: use interface/abstract to have general SearchItem and custom SearchItem
 public class SearchItem extends HBox {
     private final ComboBox<String> field;
     private final ComboBox<ICondition> condition;
@@ -43,7 +42,7 @@ public class SearchItem extends HBox {
             condition.getItems().setAll(searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getConditions());
             getChildren().remove(tfValue);
             try {
-                tfValue = (Control) searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getValueControlType().getConstructor(null).newInstance(null);
+                tfValue = (Control) searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getValueControlType().getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
