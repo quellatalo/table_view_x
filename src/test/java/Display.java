@@ -21,7 +21,6 @@ public class Display<T> extends AnchorPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-        tableViewX.setStringAndPrimitivesOnly(false);
         tableViewX.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F3) {
                 tableViewX.openFilter();
@@ -35,5 +34,9 @@ public class Display<T> extends AnchorPane {
 
     public void showFilter() {
         tableViewX.openFilter();
+    }
+
+    public TableViewX<T> getTableViewX() {
+        return tableViewX;
     }
 }

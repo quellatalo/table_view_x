@@ -56,20 +56,15 @@ public class ClassUtils {
     }
 
     private static boolean isEntryQualified(Map.Entry<String, Method> set, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
-        boolean b = true;
+        boolean b = false;
         Class<?> propType = set.getValue().getReturnType();
-        if (set.getKey().equals("hashCode") && !displayHashCode) b = false;
-        else if ((propType.isArray() || Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)) && !displayMapsAndCollections)
-            b = false;
-        else if (set.getKey().equals("Class") && !displayClass) b = false;
-        else if (stringAndPrimitivesOnly &&
-                (
-                        !(propType.isPrimitive() || propType == String.class) &&
-                                !ClassUtils.isAssignableFrom(propType, forcedDisplayTypes)
-                ) ||
-                (set.getKey().equals("Class") && !displayClass) ||
-                (set.getKey().equals("hashCode") && !displayHashCode))
-            b = false;
+        if (set.getKey().equals("hashCode")) b = displayHashCode;
+        else if ((propType.isArray() || Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)))
+            b = displayMapsAndCollections;
+        else if (set.getKey().equals("Class")) b = displayClass;
+        else if (isAssignableFrom(propType, forcedDisplayTypes)) b = true;
+        else if (!stringAndPrimitivesOnly) b = true;
+        else b = propType.isPrimitive() || propType == String.class;
         return b;
     }
 }

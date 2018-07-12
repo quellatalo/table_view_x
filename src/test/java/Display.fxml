@@ -10,5 +10,6 @@
                 rowCounting="true"
                 stringAndPrimitivesOnly="true"
                 titleStyle="CAPITALIZE_SPACING"
+                displayMapsAndCollections="true"
     />
 </fx:root>
