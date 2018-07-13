@@ -307,6 +307,9 @@ public class TableViewX<T> extends TableView {
                 getItems().addAll(items);
             }
         }
+        if (getColumns().size() > 0) {
+            scrollToColumnIndex(0);
+        }
     }
 
     public List<?> getMaskedContent() {

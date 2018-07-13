@@ -56,7 +56,7 @@ public class ClassUtils {
     }
 
     private static boolean isEntryQualified(Map.Entry<String, Method> set, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
-        boolean b = false;
+        boolean b;
         Class<?> propType = set.getValue().getReturnType();
         if (set.getKey().equals("hashCode")) b = displayHashCode;
         else if ((propType.isArray() || Map.class.isAssignableFrom(propType) || Collection.class.isAssignableFrom(propType)))
