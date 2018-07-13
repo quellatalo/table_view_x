@@ -320,7 +320,7 @@ public class TableViewX<T> extends TableView {
         List<?> ct = getMaskedContent();
         if (ct != null && !ct.isEmpty()) {
             if (needPrepareFilter) {
-                getAdvFilterDialog().prepare(ct.get(0).getClass(), displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
+                getAdvFilterDialog().prepare(ct.get(0).getClass());
                 needPrepareFilter = false;
             }
             Optional<ButtonType> rs = getAdvFilterDialog().showAndWait();
@@ -340,7 +340,7 @@ public class TableViewX<T> extends TableView {
 
     public LazAdvFilterDialog getAdvFilterDialog() {
         if (advFilterDialog == null) {
-            advFilterDialog = new LazAdvFilterDialog("Filter");
+            advFilterDialog = new LazAdvFilterDialog("Filter", displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
             advFilterDialog.initOwner(getScene().getWindow());
         }
         return advFilterDialog;

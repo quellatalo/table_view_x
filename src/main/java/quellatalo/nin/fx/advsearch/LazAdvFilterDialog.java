@@ -19,9 +19,19 @@ public class LazAdvFilterDialog extends Alert {
     private final Map<String, ISearchField> customSearchFields;
     private final List<SearchItem> searchItems;
     private final EventHandler<ActionEvent> removeItem;
+    private boolean stringAndPrimitivesOnly;
+    private boolean displayClass;
+    private boolean displayHashCode;
+    private boolean displayMapsAndCollections;
+    private List<Class<?>> forcedDisplayTypes;
 
-    public LazAdvFilterDialog(String title) {
+    public LazAdvFilterDialog(String title, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
         super(AlertType.CONFIRMATION);
+        this.displayClass = displayClass;
+        this.displayHashCode = displayHashCode;
+        this.displayMapsAndCollections = displayMapsAndCollections;
+        this.stringAndPrimitivesOnly = stringAndPrimitivesOnly;
+        this.forcedDisplayTypes = forcedDisplayTypes;
         vBox = new VBox();
         vBox.setSpacing(5);
         setGraphic(null);
@@ -46,7 +56,7 @@ public class LazAdvFilterDialog extends Alert {
         });
     }
 
-    public void prepare(Class<?> type, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
+    public void prepare(Class<?> type) {
         searchFields.clear();
         Map<String, Method> getters = ClassUtils.getGetters(type, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes);
         for (Map.Entry<String, Method> entry : getters.entrySet()) {
@@ -69,5 +79,45 @@ public class LazAdvFilterDialog extends Alert {
 
     public Map<String, ISearchField> getCustomSearchFields() {
         return customSearchFields;
+    }
+
+    public boolean isStringAndPrimitivesOnly() {
+        return stringAndPrimitivesOnly;
+    }
+
+    public void setStringAndPrimitivesOnly(boolean stringAndPrimitivesOnly) {
+        this.stringAndPrimitivesOnly = stringAndPrimitivesOnly;
+    }
+
+    public boolean isDisplayClass() {
+        return displayClass;
+    }
+
+    public void setDisplayClass(boolean displayClass) {
+        this.displayClass = displayClass;
+    }
+
+    public boolean isDisplayHashCode() {
+        return displayHashCode;
+    }
+
+    public void setDisplayHashCode(boolean displayHashCode) {
+        this.displayHashCode = displayHashCode;
+    }
+
+    public boolean isDisplayMapsAndCollections() {
+        return displayMapsAndCollections;
+    }
+
+    public void setDisplayMapsAndCollections(boolean displayMapsAndCollections) {
+        this.displayMapsAndCollections = displayMapsAndCollections;
+    }
+
+    public List<Class<?>> getForcedDisplayTypes() {
+        return forcedDisplayTypes;
+    }
+
+    public void setForcedDisplayTypes(List<Class<?>> forcedDisplayTypes) {
+        this.forcedDisplayTypes = forcedDisplayTypes;
     }
 }
