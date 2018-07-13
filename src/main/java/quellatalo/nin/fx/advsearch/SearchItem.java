@@ -47,8 +47,11 @@ public class SearchItem extends HBox {
                 e.printStackTrace();
             }
             getChildren().add(2, tfValue);
-            if (condition.getSelectionModel().getSelectedIndex() < 0)
+            int conditionIndex = condition.getSelectionModel().getSelectedIndex();
+            if (conditionIndex < 0 || condition.getItems().size() <= conditionIndex)
                 condition.getSelectionModel().select(0);
+            else
+                condition.getSelectionModel().select(conditionIndex);
         };
         field.setOnAction(fieldSelected);
         field.getSelectionModel().select(0);
