@@ -1,7 +1,6 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import quellatalo.nin.fx.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,5 @@ public class Testing extends Application {
         Scene scene = new Scene(display);
         primaryStage.setScene(scene);
         primaryStage.show();
-        System.out.println(
-                ClassUtils.getGetters(samples.get(0).getClass(), false, true, true, true, new ArrayList<>())
-                        .keySet()
-        );
-
     }
 }

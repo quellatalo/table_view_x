@@ -6,7 +6,17 @@
 
     <groupId>quellatalo.nin.fx</groupId>
     <artifactId>table_view_x</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.2.1</version>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
