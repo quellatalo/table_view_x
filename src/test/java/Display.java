@@ -1,6 +1,5 @@
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import quellatalo.nin.fx.TableViewX;
 
@@ -21,11 +20,6 @@ public class Display<T> extends AnchorPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-        tableViewX.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.F3) {
-                tableViewX.openFilter();
-            }
-        });
     }
 
     public void setContent(List<T> content) {

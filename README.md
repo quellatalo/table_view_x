@@ -78,8 +78,6 @@ TableViewX<Sample> tableViewX;
         //tableViewX.getForcedDisplayTypes().add(SomeType.class);
         // [OPTIONAL] Display Map and Collection properties also
         tableViewX.setDisplayMapsAndCollections(true);
-        // [OPTIONAL] enable the tableviewx to show filter dialog when righ-clicked
-        tableViewX.setRightClickFilter(true);
 
         // Sets the contents
         tableViewX.setContent(samples);
