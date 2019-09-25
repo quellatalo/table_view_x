@@ -27,6 +27,7 @@ public class Testing extends Application {
         strings.add("");
         strings.add("3");
         strings.add("1");
+        samples.get(0).setList(strings);
         Display display = new Display();
         display.setContent(samples);
         Scene scene = new Scene(display);

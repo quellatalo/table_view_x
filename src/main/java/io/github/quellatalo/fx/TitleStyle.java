@@ -1,4 +1,4 @@
-package quellatalo.nin.fx;
+package io.github.quellatalo.fx;
 
 /**
  * Column header naming styles.

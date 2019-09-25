@@ -5,7 +5,7 @@
  */
 
 
-package quellatalo.nin.fx.datetime;
+package io.github.quellatalo.fx.datetime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,7 +22,7 @@ public class DateTimePicker extends DatePicker {
 
     private DateTimeFormatter formatter;
     private ObjectProperty<LocalDateTime> dateTimeValue = new SimpleObjectProperty<>(LocalDateTime.now());
-    private ObjectProperty<String> format = new SimpleObjectProperty<String>() {
+    private ObjectProperty<String> format = new SimpleObjectProperty<>() {
         public void set(String newValue) {
             super.set(newValue);
             formatter = DateTimeFormatter.ofPattern(newValue);

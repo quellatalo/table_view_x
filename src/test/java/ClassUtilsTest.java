@@ -1,5 +1,5 @@
 import org.junit.Test;
-import quellatalo.nin.fx.ClassUtils;
+import io.github.quellatalo.reflection.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;

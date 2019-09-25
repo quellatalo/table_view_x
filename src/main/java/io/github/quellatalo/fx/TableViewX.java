@@ -1,4 +1,4 @@
-package quellatalo.nin.fx;
+package io.github.quellatalo.fx;
 
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -6,7 +6,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
-import quellatalo.nin.fx.advsearch.LazAdvFilterDialog;
+import io.github.quellatalo.fx.advsearch.LazAdvFilterDialog;
+import io.github.quellatalo.reflection.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

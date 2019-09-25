@@ -1,7 +1,7 @@
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
-import quellatalo.nin.fx.TableViewX;
+import io.github.quellatalo.fx.TableViewX;
 
 import java.io.IOException;
 import java.util.List;

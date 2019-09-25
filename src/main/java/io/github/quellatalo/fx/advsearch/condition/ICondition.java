@@ -1,6 +1,6 @@
-package quellatalo.nin.fx.advsearch.condition;
+package io.github.quellatalo.fx.advsearch.condition;
 
-import quellatalo.nin.fx.ClassUtils;
+import io.github.quellatalo.reflection.ClassUtils;
 
 import java.time.LocalDateTime;
 import java.util.function.BiPredicate;

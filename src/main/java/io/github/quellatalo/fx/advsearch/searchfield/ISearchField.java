@@ -1,8 +1,8 @@
-package quellatalo.nin.fx.advsearch.searchfield;
+package io.github.quellatalo.fx.advsearch.searchfield;
 
+import io.github.quellatalo.reflection.ClassUtils;
 import javafx.scene.control.Control;
-import quellatalo.nin.fx.ClassUtils;
-import quellatalo.nin.fx.advsearch.condition.ICondition;
+import io.github.quellatalo.fx.advsearch.condition.ICondition;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -1,12 +1,12 @@
-package quellatalo.nin.fx.advsearch;
+package io.github.quellatalo.fx.advsearch;
 
+import io.github.quellatalo.reflection.ClassUtils;
+import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.VBox;
-import quellatalo.nin.fx.ClassUtils;
-import quellatalo.nin.fx.advsearch.searchfield.ISearchField;
 
 import java.lang.reflect.Method;
 import java.util.*;

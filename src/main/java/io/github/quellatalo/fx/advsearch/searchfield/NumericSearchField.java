@@ -1,24 +1,24 @@
-package quellatalo.nin.fx.advsearch.searchfield;
+package io.github.quellatalo.fx.advsearch.searchfield;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
-import quellatalo.nin.fx.advsearch.condition.ICondition;
-import quellatalo.nin.fx.advsearch.condition.TextCondition;
+import io.github.quellatalo.fx.advsearch.condition.ICondition;
+import io.github.quellatalo.fx.advsearch.condition.NumericCondition;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class TextSearchField implements ISearchField {
-    private static final Function<Control, Object> FUNCTION = control -> ((TextField) control).getText();
+public class NumericSearchField implements ISearchField {
+    private static final Function<Control, Object> FUNCTION = control -> Double.parseDouble(((TextField) control).getText());
     private final UnaryOperator<Object> subjectOperator;
 
-    public TextSearchField(UnaryOperator<Object> subjectOperator) {
+    public NumericSearchField(UnaryOperator<Object> subjectOperator) {
         this.subjectOperator = subjectOperator;
     }
 
     @Override
     public ICondition[] getConditions() {
-        return TextCondition.values();
+        return NumericCondition.values();
     }
 
     @Override

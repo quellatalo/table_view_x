@@ -1,4 +1,4 @@
-package quellatalo.nin.fx;
+package io.github.quellatalo.fx;
 
 public class PrimRow<T> {
     private final int index;

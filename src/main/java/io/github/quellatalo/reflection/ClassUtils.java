@@ -1,4 +1,4 @@
-package quellatalo.nin.fx;
+package io.github.quellatalo.reflection;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -52,7 +52,8 @@ public class ClassUtils {
     }
 
     public static SortedMap<String, Method> getGetters(Class c, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
-        return getGetters(c, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, (Class<?>[]) forcedDisplayTypes.toArray());
+        Class<?>[] array = new Class[forcedDisplayTypes.size()];
+        return getGetters(c, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes.toArray(array));
     }
 
     public static boolean isNumeric(Class<?> type) {
