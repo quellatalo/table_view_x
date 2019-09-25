@@ -6,7 +6,7 @@
 
     <groupId>io.github.quellatalo.fx</groupId>
     <artifactId>table-view-x</artifactId>
-    <version>1.7.2.1</version>
+    <version>1.7.3.0</version>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
