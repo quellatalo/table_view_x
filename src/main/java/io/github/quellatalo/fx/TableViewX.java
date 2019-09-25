@@ -9,6 +9,7 @@ import javafx.scene.control.TableView;
 import io.github.quellatalo.fx.advsearch.LazAdvFilterDialog;
 import io.github.quellatalo.reflection.ClassUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class TableViewX<T> extends TableView {
     public static final int DEFAULT_BASE_INDEX = 0;
     public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     private BooleanProperty rowCounting;
     private BooleanProperty stringAndPrimitivesOnly;
@@ -275,9 +277,6 @@ public class TableViewX<T> extends TableView {
                 for (int i = baseIndex.get(); i < items.size() + baseIndex.get(); i++) {
                     maskedContent.add(new PrimRow<>(i + baseIndex.get(), items.get(i)));
                 }
-                TableColumn<PrimRow<T>, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
-                indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(column.getValue().getIndex()));
-                getColumns().add(indexColumn);
                 TableColumn<PrimRow<T>, Object> column = new TableColumn<>();
                 column.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getValue()));
                 getColumns().add(column);
@@ -292,6 +291,9 @@ public class TableViewX<T> extends TableView {
                         Object o = null;
                         try {
                             o = set.getValue().invoke(param.getValue());
+                            if(o!=null && o.getClass().isArray()) {
+                                o = Arrays.asList((Object[]) o);
+                            }
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
@@ -299,13 +301,13 @@ public class TableViewX<T> extends TableView {
                     });
                 }
                 getColumns().sort(columnComparator);
-                if (rowCounting.get()) {
-                    TableColumn<T, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
-                    indexColumn.setSortable(false);
-                    indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
-                    getColumns().add(0, indexColumn);
-                }
                 getItems().addAll(items);
+            }
+            if (rowCounting.get()) {
+                TableColumn<T, Number> indexColumn = new TableColumn<>(rowCounterTitle.get());
+                indexColumn.setSortable(false);
+                indexColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<>(getItems().indexOf(column.getValue()) + baseIndex.get()));
+                getColumns().add(0, indexColumn);
             }
         }
         if (getColumns().size() > 0) {
