@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
 <?import io.github.quellatalo.fx.TableViewX?>
+<?import javafx.scene.layout.AnchorPane?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1" type="AnchorPane"
          xmlns="http://javafx.com/javafx/8.0.121">
     <TableViewX fx:id="tableViewX"
@@ -11,5 +11,6 @@
                 stringAndPrimitivesOnly="true"
                 titleStyle="CAPITALIZE_SPACING"
                 displayMapsAndCollections="true"
+                openFilterHotkey="F3"
     />
 </fx:root>

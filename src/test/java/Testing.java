@@ -1,6 +1,5 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -35,11 +34,11 @@ public class Testing extends Application {
         Display display = new Display();
         display.setContent(samples);
         Scene scene = new Scene(display);
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.F3) {
-                display.getTableViewX().openFilter();
-            }
-        });
+//        scene.setOnKeyPressed(event -> {
+//            if (event.getCode() == KeyCode.F3) {
+//                display.showFilter();
+//            }
+//        });
         primaryStage.setScene(scene);
         primaryStage.show();
     }

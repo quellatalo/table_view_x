@@ -1,15 +1,17 @@
 package io.github.quellatalo.fx;
 
+import io.github.quellatalo.fx.advsearch.LazAdvFilterDialog;
+import io.github.quellatalo.reflection.ClassUtils;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
-import io.github.quellatalo.fx.advsearch.LazAdvFilterDialog;
-import io.github.quellatalo.reflection.ClassUtils;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -26,6 +28,8 @@ public class TableViewX<T> extends TableView {
     public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
+    private EventHandler<KeyEvent> openFilterKeyPressed;
+
     private BooleanProperty rowCounting;
     private BooleanProperty stringAndPrimitivesOnly;
     private BooleanProperty displayClass;
@@ -34,6 +38,7 @@ public class TableViewX<T> extends TableView {
     private IntegerProperty baseIndex;
     private StringProperty rowCounterTitle;
     private ObjectProperty<TitleStyle> titleStyle;
+    private ObjectProperty<KeyCode> openFilterHotkey;
     private List<Class<?>> forcedDisplayTypes;
     private Comparator<TableColumn<T, ?>> columnComparator;
     private List<T> content;
@@ -53,6 +58,7 @@ public class TableViewX<T> extends TableView {
         baseIndex = new SimpleIntegerProperty(this, "baseIndex", DEFAULT_BASE_INDEX);
         rowCounterTitle = new SimpleStringProperty(this, "rowCounterTitle", DEFAULT_ROW_COUNTER_TITLE);
         titleStyle = new SimpleObjectProperty<>(this, "titleStyle", TitleStyle.ORIGINAL);
+        openFilterHotkey = new SimpleObjectProperty<>(this, "openFilterHotkey");
         forcedDisplayTypes = new ArrayList<>();
         columnComparator = Comparator.comparing(TableColumnBase::getText);
         columnComparator = Comparator.comparing(TableColumnBase::getText);
@@ -200,6 +206,33 @@ public class TableViewX<T> extends TableView {
     }
 
     /**
+     * Gets the shortcut to open the filter.
+     *
+     * @return The key to open the filter.
+     */
+    public KeyCode getOpenFilterHotkey() {
+        return openFilterHotkey.get();
+    }
+
+    /**
+     * Sets the shortcut to open the filter.
+     *
+     * @param openFilterHotkey The key to open the filter.
+     */
+    public void setOpenFilterHotkey(KeyCode openFilterHotkey) {
+        if (openFilterKeyPressed != null) {
+            removeEventHandler(KeyEvent.KEY_PRESSED, openFilterKeyPressed);
+        }
+        openFilterKeyPressed = keyEvent -> {
+            if (keyEvent.getCode() == openFilterHotkey) {
+                openFilter();
+            }
+        };
+        addEventHandler(KeyEvent.KEY_PRESSED, openFilterKeyPressed);
+        this.openFilterHotkey.set(openFilterHotkey);
+    }
+
+    /**
      * Gets the return types from the properties which will be forced to display.
      *
      * @return The types that will be forced to display on the TableView.
@@ -250,6 +283,10 @@ public class TableViewX<T> extends TableView {
 
     public BooleanProperty displayMapsAndCollectionsProperty() {
         return displayMapsAndCollections;
+    }
+
+    public ObjectProperty<KeyCode> openFilterHotkeyProperty() {
+        return openFilterHotkey;
     }
 
     public Comparator<TableColumn<T, ?>> getColumnComparator() {
