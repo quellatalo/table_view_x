@@ -67,15 +67,17 @@ public class SearchItem extends HBox {
         });
         getChildren().add(hplRemove);
         predicate = o -> {
-            boolean b;
+            boolean b = false;
             Object subject = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubjectOperator().apply(o);
-            Class<?> type = subject.getClass();
-            if (ClassUtils.isNumeric(type)) {
-                b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
-            } else if (type == LocalDateTime.class) {
-                b = condition.getValue().test(subject, ((DateTimePicker) tfValue).getDateTimeValue());
-            } else {
-                b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
+            if(subject!=null) {
+                Class<?> type = subject.getClass();
+                if (ClassUtils.isNumeric(type)) {
+                    b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
+                } else if (type == LocalDateTime.class) {
+                    b = condition.getValue().test(subject, ((DateTimePicker) tfValue).getDateTimeValue());
+                } else {
+                    b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
+                }
             }
             return b;
         };
