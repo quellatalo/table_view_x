@@ -12,7 +12,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 public class TableViewX<T> extends TableView {
     public static final int DEFAULT_BASE_INDEX = 0;
     public static final String DEFAULT_ROW_COUNTER_TITLE = "#";
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     private EventHandler<KeyEvent> openFilterKeyPressed;
 
@@ -330,17 +328,7 @@ public class TableViewX<T> extends TableView {
                         try {
                             o = set.getValue().invoke(param.getValue());
                             if(o!=null && o.getClass().isArray()) {
-                                int len = Array.getLength(o);
-                                if(len>0){
-                                    Class<?> memberType = Array.get(o, 0).getClass();
-                                    Object[] newArray = (Object[]) Array.newInstance(memberType, len);
-                                    for (int i = 0; i < len; i++) {
-                                        newArray[i] = Array.get(o, i);
-                                    }
-                                    o = Arrays.asList(newArray);
-                                }else{
-                                    o = Arrays.asList(EMPTY_OBJECT_ARRAY);
-                                }
+                                o = Arrays.asList(ClassUtils.toObjectArray(o));
                             }
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();

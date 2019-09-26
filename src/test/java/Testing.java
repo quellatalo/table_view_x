@@ -15,14 +15,12 @@ public class Testing extends Application {
         samples.add(new Sample(10, "three"));
         primaryStage.setTitle("Kawaii is Justice!");
         int[] integers = {1,2,1,2,3};
-        System.out.println(integers);
         List<String> strings = new ArrayList<>();
         strings.add("");
         strings.add("1");
         strings.add("");
         strings.add("3");
         strings.add("1");
-        System.out.println(strings);
         samples.get(0).setList(strings);
         String[] arr = {"a","b"};
         samples.get(1).setArgs(integers);
@@ -36,5 +34,9 @@ public class Testing extends Application {
 //        });
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

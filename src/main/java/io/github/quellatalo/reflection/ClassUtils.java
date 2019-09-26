@@ -1,9 +1,12 @@
 package io.github.quellatalo.reflection;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class ClassUtils {
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
     public static boolean isAssignableFrom(Class type, Class<?>... classList) {
         boolean result = false;
         if (classList != null)
@@ -54,6 +57,19 @@ public class ClassUtils {
     public static SortedMap<String, Method> getGetters(Class c, boolean displayHashCode, boolean displayClass, boolean displayMapsAndCollections, boolean stringAndPrimitivesOnly, List<Class<?>> forcedDisplayTypes) {
         Class<?>[] array = new Class[forcedDisplayTypes.size()];
         return getGetters(c, displayHashCode, displayClass, displayMapsAndCollections, stringAndPrimitivesOnly, forcedDisplayTypes.toArray(array));
+    }
+
+    public static Object[] toObjectArray(Object o) {
+        int len = Array.getLength(o);
+        Object[] rs = EMPTY_OBJECT_ARRAY;
+        if (len > 0) {
+            Class<?> memberType = Array.get(o, 0).getClass();
+            rs = (Object[]) Array.newInstance(memberType, len);
+            for (int i = 0; i < len; i++) {
+                rs[i] = Array.get(o, i);
+            }
+        }
+        return rs;
     }
 
     public static boolean isNumeric(Class<?> type) {

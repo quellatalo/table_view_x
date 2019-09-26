@@ -1,5 +1,9 @@
 package io.github.quellatalo.fx.advsearch;
 
+import io.github.quellatalo.fx.advsearch.condition.ICondition;
+import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
+import io.github.quellatalo.fx.datetime.DateTimePicker;
+import io.github.quellatalo.reflection.ClassUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
@@ -8,12 +12,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import io.github.quellatalo.reflection.ClassUtils;
-import io.github.quellatalo.fx.advsearch.condition.ICondition;
-import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
-import io.github.quellatalo.fx.datetime.DateTimePicker;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -79,15 +78,7 @@ public class SearchItem extends HBox {
                     b = condition.getValue().test(subject, ((DateTimePicker) tfValue).getDateTimeValue());
                 } else {
                     if (subject.getClass().isArray()) {
-                        int len = Array.getLength(subject);
-                        if (len > 0) {
-                            Class<?> memberType = Array.get(subject, 0).getClass();
-                            Object[] newArray = (Object[]) Array.newInstance(memberType, len);
-                            for (int i = 0; i < len; i++) {
-                                newArray[i] = Array.get(subject, i);
-                            }
-                            subject = Arrays.asList(newArray);
-                        }
+                        subject = Arrays.asList(ClassUtils.toObjectArray(subject));
                     }
                     b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
                 }
