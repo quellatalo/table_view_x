@@ -13,8 +13,10 @@ import io.github.quellatalo.fx.advsearch.condition.ICondition;
 import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
 import io.github.quellatalo.fx.datetime.DateTimePicker;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.SortedMap;
 import java.util.function.Predicate;
 
@@ -69,13 +71,24 @@ public class SearchItem extends HBox {
         predicate = o -> {
             boolean b = false;
             Object subject = searchFieldMap.get(field.getSelectionModel().getSelectedItem()).getSubjectOperator().apply(o);
-            if(subject!=null) {
+            if (subject != null) {
                 Class<?> type = subject.getClass();
                 if (ClassUtils.isNumeric(type)) {
                     b = condition.getValue().test(((Number) subject).doubleValue(), Double.parseDouble(((TextField) tfValue).getText()));
                 } else if (type == LocalDateTime.class) {
                     b = condition.getValue().test(subject, ((DateTimePicker) tfValue).getDateTimeValue());
                 } else {
+                    if (subject.getClass().isArray()) {
+                        int len = Array.getLength(subject);
+                        if (len > 0) {
+                            Class<?> memberType = Array.get(subject, 0).getClass();
+                            Object[] newArray = (Object[]) Array.newInstance(memberType, len);
+                            for (int i = 0; i < len; i++) {
+                                newArray[i] = Array.get(subject, i);
+                            }
+                            subject = Arrays.asList(newArray);
+                        }
+                    }
                     b = condition.getValue().test(subject.toString().toLowerCase(), ((TextField) tfValue).getText().toLowerCase());
                 }
             }

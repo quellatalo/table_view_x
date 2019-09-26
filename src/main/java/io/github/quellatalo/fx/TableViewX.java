@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -308,8 +309,8 @@ public class TableViewX<T> extends TableView {
         getColumns().clear();
         getItems().clear();
         if (items != null && !items.isEmpty()) {
-            Class c = items.get(0).getClass();
-            if (c == String.class || c == Byte.class || c == Character.class || c == Short.class || c == Integer.class || c == Long.class || c == Float.class || c == Double.class || c == Boolean.class || c == Void.class) {
+            Class type = items.get(0).getClass();
+            if (type == String.class || type == Byte.class || type == Character.class || type == Short.class || type == Integer.class || type == Long.class || type == Float.class || type == Double.class || type == Boolean.class || type == Void.class) {
                 maskedContent = new ArrayList<>();
                 for (int i = baseIndex.get(); i < items.size() + baseIndex.get(); i++) {
                     maskedContent.add(new PrimRow<>(i + baseIndex.get(), items.get(i)));
@@ -319,7 +320,7 @@ public class TableViewX<T> extends TableView {
                 getColumns().add(column);
                 getItems().addAll(maskedContent);
             } else {
-                Map<String, Method> getters = ClassUtils.getGetters(c, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
+                Map<String, Method> getters = ClassUtils.getGetters(type, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
                 for (Map.Entry<String, Method> set : getters.entrySet()) {
                     String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
                     TableColumn<T, Object> column = new TableColumn<>(displayLabel);
@@ -329,7 +330,17 @@ public class TableViewX<T> extends TableView {
                         try {
                             o = set.getValue().invoke(param.getValue());
                             if(o!=null && o.getClass().isArray()) {
-                                o = Arrays.asList((Object[]) o);
+                                int len = Array.getLength(o);
+                                if(len>0){
+                                    Class<?> memberType = Array.get(o, 0).getClass();
+                                    Object[] newArray = (Object[]) Array.newInstance(memberType, len);
+                                    for (int i = 0; i < len; i++) {
+                                        newArray[i] = Array.get(o, i);
+                                    }
+                                    o = Arrays.asList(newArray);
+                                }else{
+                                    o = Arrays.asList(EMPTY_OBJECT_ARRAY);
+                                }
                             }
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();

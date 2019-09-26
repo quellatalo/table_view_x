@@ -22,7 +22,7 @@ public class DateTimePicker extends DatePicker {
 
     private DateTimeFormatter formatter;
     private ObjectProperty<LocalDateTime> dateTimeValue = new SimpleObjectProperty<>(LocalDateTime.now());
-    private ObjectProperty<String> format = new SimpleObjectProperty<>() {
+    private ObjectProperty<String> format = new SimpleObjectProperty<String>() {
         public void set(String newValue) {
             super.set(newValue);
             formatter = DateTimeFormatter.ofPattern(newValue);

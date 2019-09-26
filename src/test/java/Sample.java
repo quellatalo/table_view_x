@@ -6,7 +6,7 @@ public class Sample {
     private int id;
     private String name;
     private LocalDateTime time;
-    private String[] args;
+    private int[] args;
     private List<String> list;
 
     public Sample(int id, String name) {
@@ -53,11 +53,11 @@ public class Sample {
         return "id -> " + id + ", name -> " + name;
     }
 
-    public String[] getArgs() {
+    public int[] getArgs() {
         return args;
     }
 
-    public void setArgs(String[] args) {
+    public void setArgs(int[] args) {
         this.args = args;
     }
 }
