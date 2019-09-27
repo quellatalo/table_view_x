@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.quellatalo.fx</groupId>
+    <groupId>io.github.quellatalo</groupId>
     <artifactId>table-view-x</artifactId>
     <version>1.7.3.0</version>
 
@@ -54,7 +54,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.1</version>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
