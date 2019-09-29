@@ -1,9 +1,9 @@
 package io.github.quellatalo.fx.advsearch.searchfield;
 
-import javafx.scene.control.Control;
-import javafx.scene.control.TextField;
 import io.github.quellatalo.fx.advsearch.condition.ICondition;
 import io.github.quellatalo.fx.advsearch.condition.NumericCondition;
+import javafx.scene.control.Control;
+import javafx.scene.control.TextField;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
