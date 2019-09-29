@@ -1,4 +1,4 @@
-package io.github.quellatalo.fx;
+package io.github.quellatalo.fx.tvx;
 
 /**
  * Column header naming styles.

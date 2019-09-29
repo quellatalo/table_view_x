@@ -6,7 +6,7 @@
 
     <groupId>io.github.quellatalo.fx</groupId>
     <artifactId>table-view-x</artifactId>
-    <version>1.7.3.2-SNAPSHOT</version>
+    <version>1.7.4.0-SNAPSHOT</version>
 
     <name>table-view-x</name>
     <description>This package provide a new class TableViewX which is upgraded from TableView. It uses reflection to
@@ -49,7 +49,6 @@
     </distributionManagement>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>

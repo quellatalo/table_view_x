@@ -1,4 +1,4 @@
-package io.github.quellatalo.fx;
+package io.github.quellatalo.fx.tvx;
 
 class StringUtils {
     static String capitalizeFirstLetter(String str) {

@@ -1,6 +1,6 @@
-package io.github.quellatalo.fx.advsearch;
+package io.github.quellatalo.fx.tvx.advsearch;
 
-import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
+import io.github.quellatalo.fx.tvx.advsearch.searchfield.ISearchField;
 import io.github.quellatalo.reflection.ClassUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

@@ -1,4 +1,4 @@
-package io.github.quellatalo.fx.advsearch.condition;
+package io.github.quellatalo.fx.tvx.advsearch.condition;
 
 import io.github.quellatalo.reflection.ClassUtils;
 

@@ -1,7 +1,7 @@
-package io.github.quellatalo.fx.advsearch.searchfield;
+package io.github.quellatalo.fx.tvx.advsearch.searchfield;
 
-import io.github.quellatalo.fx.advsearch.condition.ICondition;
-import io.github.quellatalo.fx.advsearch.condition.NumericCondition;
+import io.github.quellatalo.fx.tvx.advsearch.condition.ICondition;
+import io.github.quellatalo.fx.tvx.advsearch.condition.NumericCondition;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 

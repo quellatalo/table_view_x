@@ -5,7 +5,7 @@
  */
 
 
-package io.github.quellatalo.fx.datetime;
+package io.github.quellatalo.fx.tvx.datetime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -1,8 +1,8 @@
-package io.github.quellatalo.fx.advsearch;
+package io.github.quellatalo.fx.tvx.advsearch;
 
-import io.github.quellatalo.fx.advsearch.condition.ICondition;
-import io.github.quellatalo.fx.advsearch.searchfield.ISearchField;
-import io.github.quellatalo.fx.datetime.DateTimePicker;
+import io.github.quellatalo.fx.tvx.advsearch.condition.ICondition;
+import io.github.quellatalo.fx.tvx.advsearch.searchfield.ISearchField;
+import io.github.quellatalo.fx.tvx.datetime.DateTimePicker;
 import io.github.quellatalo.reflection.ClassUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

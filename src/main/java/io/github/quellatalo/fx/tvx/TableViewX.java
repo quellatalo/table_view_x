@@ -1,6 +1,6 @@
-package io.github.quellatalo.fx;
+package io.github.quellatalo.fx.tvx;
 
-import io.github.quellatalo.fx.advsearch.LazAdvFilterDialog;
+import io.github.quellatalo.fx.tvx.advsearch.LazAdvFilterDialog;
 import io.github.quellatalo.reflection.ClassUtils;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
