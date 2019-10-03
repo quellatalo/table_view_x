@@ -6,7 +6,7 @@ TableViewX is an attempt to improve TableView to be able to handle custom user-d
 <dependency>
     <groupId>io.github.quellatalo.fx</groupId>
     <artifactId>table-view-x</artifactId>
-    <version>1.7.4.0</version>
+    <version>1.7.4.1</version>
 </dependency>
 ```
 ### Sample code:
