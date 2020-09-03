@@ -6,7 +6,7 @@ TableViewX is an attempt to improve TableView to be able to handle custom user-d
 <dependency>
     <groupId>io.github.quellatalo.fx</groupId>
     <artifactId>table-view-x</artifactId>
-    <version>1.7.4.1</version>
+    <version>1.8.0.0</version>
 </dependency>
 ```
 ### Sample code:
@@ -88,7 +88,10 @@ TableViewX<Sample> tableViewX;
         tableViewX.setDisplayMapsAndCollections(true);
 
         // Sets the contents
+        // It takes the type of first element to show by default
         tableViewX.setContent(samples);
+        // or, you can set the overal type of all elements:
+        //tableViewX.setContent(samples, Sample.class);
         
         // force open filter
         tableViewX.openFilter();

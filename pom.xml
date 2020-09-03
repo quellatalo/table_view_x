@@ -6,7 +6,7 @@
 
     <groupId>io.github.quellatalo.fx</groupId>
     <artifactId>table-view-x</artifactId>
-    <version>1.7.4.1</version>
+    <version>1.8.0.0</version>
 
     <name>table-view-x</name>
     <description>This package provide a new class TableViewX which is upgraded from TableView. It uses reflection to

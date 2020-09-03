@@ -44,6 +44,7 @@ public class TableViewX<T> extends TableView {
     private List<PrimRow<T>> maskedContent;
     private LazAdvFilterDialog advFilterDialog;
     private boolean needPrepareFilter;
+    private Class<?> contentType;
 
     /**
      * Construct a TableViewX.
@@ -60,7 +61,6 @@ public class TableViewX<T> extends TableView {
         openFilterHotkey = new SimpleObjectProperty<>(this, "openFilterHotkey");
         forcedDisplayTypes = new ArrayList<>();
         columnComparator = Comparator.comparing(TableColumnBase::getText);
-        columnComparator = Comparator.comparing(TableColumnBase::getText);
         needPrepareFilter = true;
     }
 
@@ -74,12 +74,25 @@ public class TableViewX<T> extends TableView {
         setContent(items);
     }
 
+    /**
+     * Construct a TableViewX with specified content.
+     *
+     * @param items       List of items to display.
+     * @param contentType The type in which the items are to be displayed as.
+     */
+    public TableViewX(ObservableList<T> items, Class<?> contentType) {
+        this();
+        this.contentType = contentType;
+        setContent(items);
+    }
+
     public List<T> getContent() {
         return content;
     }
 
     /**
      * Gets whether this TableViewX displays a counting column.
+     * False by default.
      *
      * @return Whether this TableViewX displays a counting column.
      */
@@ -89,6 +102,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Sets whether this TableViewX displays a counting column.
+     * False by default.
      *
      * @param rowCounting Whether this TableViewX displays a counting column.
      */
@@ -98,6 +112,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Gets whether this TableView only displays String and Primitives while ignore all other types.
+     * True by default.
      *
      * @return Whether this TableView only displays String and Primitives while ignore all other types.
      */
@@ -107,6 +122,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Sets whether this TableView only displays String and Primitives while ignore all other types.
+     * True by default.
      *
      * @param stringAndPrimitivesOnly Whether this TableView only displays String and Primitives while ignore all other types.
      */
@@ -116,6 +132,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Gets whether this TableView displays Class type of the items.
+     * False by default.
      *
      * @return Whether this TableView displays Class type of the items.
      */
@@ -125,6 +142,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Sets whether this TableView displays Class type of the items.
+     * False by default.
      *
      * @param displayClass Whether this TableView displays Class type of the items.
      */
@@ -134,6 +152,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Gets whether this TableView displays HashCode of the items.
+     * False by default.
      *
      * @return Whether this TableView displays HashCode of the items.
      */
@@ -143,6 +162,7 @@ public class TableViewX<T> extends TableView {
 
     /**
      * Sets whether this TableView displays HashCode of the items.
+     * False by default.
      *
      * @param displayHashCode Whether this TableView displays HashCode of the items.
      */
@@ -272,10 +292,22 @@ public class TableViewX<T> extends TableView {
         return titleStyle;
     }
 
+    /**
+     * Gets whether this TableView displays collection/map properties of the items.
+     * False by default.
+     *
+     * @return Whether this TableView displays collection/map properties of the items.
+     */
     public boolean isDisplayMapsAndCollections() {
         return displayMapsAndCollections.get();
     }
 
+    /**
+     * Sets whether this TableView displays collection/map properties of the items.
+     * False by default.
+     *
+     * @param displayMapsAndCollections Whether this TableView displays collection/map properties of the items.
+     */
     public void setDisplayMapsAndCollections(boolean displayMapsAndCollections) {
         this.displayMapsAndCollections.set(displayMapsAndCollections);
     }
@@ -297,6 +329,35 @@ public class TableViewX<T> extends TableView {
     }
 
     /**
+     * Gets the class in which the elements are displayed as.
+     *
+     * @return The class in which the elements are displayed as.
+     */
+    public Class<?> getContentType() {
+        return contentType;
+    }
+
+    /**
+     * Sets the class in which the elements are displayed as.
+     *
+     * @param contentType The class in which the elements are displayed as.
+     */
+    public void setContentType(Class<?> contentType) {
+        this.contentType = contentType;
+    }
+
+    /**
+     * Sets the items for the TableViewX to display.
+     *
+     * @param items       List of items to display.
+     * @param contentType The class in which the elements are displayed as.
+     */
+    public void setContent(List<T> items, Class<?> contentType) {
+        this.contentType = contentType;
+        setContent(items);
+    }
+
+    /**
      * Sets the items for the TableViewX to display.
      *
      * @param items List of items to display.
@@ -307,8 +368,10 @@ public class TableViewX<T> extends TableView {
         getColumns().clear();
         getItems().clear();
         if (items != null && !items.isEmpty()) {
-            Class type = items.get(0).getClass();
-            if (type == String.class || type == Byte.class || type == Character.class || type == Short.class || type == Integer.class || type == Long.class || type == Float.class || type == Double.class || type == Boolean.class || type == Void.class) {
+            if (contentType == null) {
+                contentType = items.get(0).getClass();
+            }
+            if (contentType == String.class || contentType == Byte.class || contentType == Character.class || contentType == Short.class || contentType == Integer.class || contentType == Long.class || contentType == Float.class || contentType == Double.class || contentType == Boolean.class || contentType == Void.class) {
                 maskedContent = new ArrayList<>();
                 for (int i = baseIndex.get(); i < items.size() + baseIndex.get(); i++) {
                     maskedContent.add(new PrimRow<>(i + baseIndex.get(), items.get(i)));
@@ -318,7 +381,7 @@ public class TableViewX<T> extends TableView {
                 getColumns().add(column);
                 getItems().addAll(maskedContent);
             } else {
-                Map<String, Method> getters = ClassUtils.getGetters(type, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
+                Map<String, Method> getters = ClassUtils.getGetters(contentType, displayHashCode.get(), displayClass.get(), displayMapsAndCollections.get(), stringAndPrimitivesOnly.get(), forcedDisplayTypes);
                 for (Map.Entry<String, Method> set : getters.entrySet()) {
                     String displayLabel = TitleStyle.transform(set.getKey(), titleStyle.get());
                     TableColumn<T, Object> column = new TableColumn<>(displayLabel);
@@ -355,11 +418,14 @@ public class TableViewX<T> extends TableView {
         return maskedContent == null ? content : maskedContent;
     }
 
+    /**
+     * Opens the Filter, in which the user can put rules to filter the displaying elements.
+     */
     public void openFilter() {
         List<?> ct = getMaskedContent();
         if (ct != null && !ct.isEmpty()) {
             if (needPrepareFilter) {
-                getAdvFilterDialog().prepare(ct.get(0).getClass());
+                getAdvFilterDialog().prepare(contentType);
                 needPrepareFilter = false;
             }
             Optional<ButtonType> rs = getAdvFilterDialog().showAndWait();
